@@ -1,6 +1,6 @@
 package com.pard.weact.User.entity;
 
-import com.pard.weact.User.dto.req.CreateUser;
+import com.pard.weact.User.dto.req.CreateUserDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,7 +29,7 @@ public class User {
     private String profilePhoto;
 
     // update 할때 공백인 부분 있으면 알아서 걸러서 수정해줌
-    public void update(CreateUser req) {
+    public void update(CreateUserDto req) {
         if (req.getUserName() != null && !req.getUserName().trim().isEmpty()) {
             this.userName = req.getUserName();
         }

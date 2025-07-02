@@ -1,6 +1,5 @@
-package com.pard.weact.User.dto.res;
+package com.pard.weact.User.dto.req;
 
-import jakarta.persistence.Column;
 import lombok.*;
 
 @Getter
@@ -8,9 +7,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-
-public class ReadAllUser {
-    private Long id;
+public class CreateUserDto {
 
     private String userName;
 
@@ -18,4 +15,5 @@ public class ReadAllUser {
 
     private String userId;
 
+    private String pw;
 }

@@ -1,4 +1,4 @@
-package com.pard.weact.User.dto.req;
+package com.pard.weact.User.dto.res;
 
 import lombok.*;
 
@@ -7,7 +7,9 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CreateUser {
+
+public class ReadAllUserDto {
+    private Long id;
 
     private String userName;
 
@@ -15,5 +17,4 @@ public class CreateUser {
 
     private String userId;
 
-    private String pw;
 }
