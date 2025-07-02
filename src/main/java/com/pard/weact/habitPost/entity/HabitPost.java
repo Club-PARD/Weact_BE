@@ -3,7 +3,18 @@ package com.pard.weact.habitPost.entity;
 
 import com.pard.weact.postPhoto.entity.PostPhoto;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
+@Entity
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class HabitPost {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,23 +26,13 @@ public class HabitPost {
     @Column(nullable = true)
     private Boolean isHaemyeong;
 
-    // 어떤 방의 인증인지
-//    @ManyToOne
-//    @JoinColumn(name = "room_id")
-    private HabitRoom habitRoom;
+    private LocalDate date;
 
-    // 어떤 사용자가 작성했는지
-//    @ManyToOne
-//    @JoinColumn(name = "member_id")
-    private MemberInformation memberInformation;
+    private Long userId;
 
-    // 어떤 사진을 첨부했는지 (PostPhoto와 연결)
-    @OneToOne
-    @JoinColumn(name = "photo_id")
-    private PostPhoto photo;
+    @Column(nullable = true)
+    private Long photoId;
 
-    @OneToOne
-    @JoinColumn(name = "accept_response_id")
-    private AcceptResponse acceptResponse;
-
+    private Long roomId;
+    private Long acceptResponseId; // 처음 수락한 유저 ID (nullable)
 }
