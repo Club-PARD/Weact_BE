@@ -2,7 +2,7 @@ package com.pard.weact.habitPost.service;
 
 import com.pard.weact.User.service.UserService;
 import com.pard.weact.habitPost.dto.req.CreateHabitPostDto;
-import com.pard.weact.habitPost.dto.res.HabitPostSummaryDto;
+import com.pard.weact.habitPost.dto.res.PostResultDto;
 import com.pard.weact.habitPost.dto.req.UploadPhotoDto;
 import com.pard.weact.habitPost.entity.HabitPost;
 import com.pard.weact.habitPost.repo.HabitPostRepo;
@@ -23,6 +23,7 @@ public class HabitPostService {
     private final HabitPostRepo habitPostRepo;
     private final PostPhotoService postPhotoService;
     private final UserService userService;
+
 
     public void createPost(UploadPhotoDto photo, CreateHabitPostDto request) { // 인증을 올리면 일단 저장하고 상태만 바꾸기
         try {
@@ -56,38 +57,27 @@ public class HabitPostService {
         }
     }
 
-    public List<HabitPostSummaryDto> getApprovedPostsByDate(Long roomId,LocalDate date) {
+    public List<PostResultDto> readAllInRoom(Long roomId, LocalDate date) {
         List<HabitPost> posts = habitPostRepo.findAllByRoomIdAndDate(roomId,date);
 
-        List<HabitPostSummaryDto> result = new ArrayList<>();
+        List<PostResultDto> result = new ArrayList<>();
         for (HabitPost post : posts) {
-            HabitPostSummaryDto dto = convertToSummaryDto(post);
+            PostResultDto dto = convertIntoDto(post);
             result.add(dto);
         }
 
         return result;
     }
 
-    private HabitPostSummaryDto convertToSummaryDto(HabitPost post) { // dto 가공 함수
-
-        String userName = userService.getUserNameById(post.getUserId());
-
-        String path = null;
-        if (post.getPhotoId() != null) {
-            path = postPhotoService.getPhotoPathById(post.getPhotoId());
-        }
-
-        return HabitPostSummaryDto.builder()
-                .userName(userName)
-                .message(post.getMessage())
-                .imageUrl(path)
-                .build();
-    }
-    // HabitPostService.java
-    public HabitPostSummaryDto getPostOne(String userId, Long roomId, LocalDate date) {
+    public PostResultDto readOneInRoom(String userId, Long roomId, LocalDate date) {
         HabitPost post = habitPostRepo.findByUserIdAndRoomIdAndDate(userId, roomId, date)
                 .orElseThrow(() -> new IllegalArgumentException("해당 사용자의 게시글이 존재하지 않습니다."));
 
+        return convertIntoDto(post);
+    }
+
+    private PostResultDto convertIntoDto(HabitPost post) { // dto 가공 함수
+
         String userName = userService.getUserNameById(post.getUserId());
 
         String path = null;
@@ -95,12 +85,11 @@ public class HabitPostService {
             path = postPhotoService.getPhotoPathById(post.getPhotoId());
         }
 
-        return HabitPostSummaryDto.builder()
+        return PostResultDto.builder()
                 .userName(userName)
                 .message(post.getMessage())
                 .imageUrl(path)
                 .build();
     }
-
 
 }

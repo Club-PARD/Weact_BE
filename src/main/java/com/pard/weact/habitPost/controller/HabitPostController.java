@@ -2,7 +2,7 @@ package com.pard.weact.habitPost.controller;
 
 
 import com.pard.weact.habitPost.dto.req.CreateHabitPostDto;
-import com.pard.weact.habitPost.dto.res.HabitPostSummaryDto;
+import com.pard.weact.habitPost.dto.res.PostResultDto;
 import com.pard.weact.habitPost.service.HabitPostService;
 import com.pard.weact.habitPost.dto.req.UploadPhotoDto;
 import lombok.RequiredArgsConstructor;
@@ -31,21 +31,23 @@ public class HabitPostController {
     }
 
     @GetMapping("")
-    public ResponseEntity<List<HabitPostSummaryDto>> getApprovedPostsByDate(
+    public ResponseEntity<List<PostResultDto>> readAllInRoom(
             @RequestParam Long roomId,
             @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date //2025-01-01 이런 식으로 넣으면 됨.
     ) {
-        List<HabitPostSummaryDto> result = habitPostService.getApprovedPostsByDate(roomId,date);
+        //like 추가
+        List<PostResultDto> result = habitPostService.readAllInRoom(roomId,date);
         return ResponseEntity.ok(result);
     }
 
     @GetMapping("/one")
-    public ResponseEntity<HabitPostSummaryDto> getPostOne(
+    public ResponseEntity<PostResultDto> readOne(
             @RequestParam String userId,
             @RequestParam Long roomId,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
     ) {
-        HabitPostSummaryDto dto = habitPostService.getPostOne(userId, roomId, date);
+        // like 추가
+        PostResultDto dto = habitPostService.readOneInRoom(userId, roomId, date);
         return ResponseEntity.ok(dto);
     }
 

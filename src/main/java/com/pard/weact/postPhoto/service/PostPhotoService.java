@@ -23,6 +23,7 @@ public class PostPhotoService {
 
     private final PostPhotoRepo postPhotoRepo; // 이미지 정보를 DB에 저장하기 위한 JPA Repository
 
+    // ec2 서버 db 연결할때 다시 설정
     @Value("${file.upload-dir}") // application.yml에서 설정한 업로드 경로 주입
     private String uploadDir;
 
@@ -53,7 +54,7 @@ public class PostPhotoService {
 
         // 클라이언트가 접근 가능한 이미지 URL 생성
         // 정적 리소스 경로 설정에 따라 파일명만으로 접근 가능
-        String url = "http://localhost:8080/" + storedFileName;
+        String url = "http://localhost:8080/" + storedFileName; // 이 부분 ec2 연결하면 고치기
 
         // 이미지 파일 정보를 DB에 저장할 Entity 객체 생성
         PostPhoto postPhoto = PostPhoto.builder()
@@ -75,6 +76,7 @@ public class PostPhotoService {
                 .orElseThrow(() -> new IllegalArgumentException("이미지 정보가 없습니다."));
     }
 
+    // 밑에 서버에서 사진 저장이 잘 됐는지 확인하는 용도
     public ResponseEntity<byte[]> getImageResponseById(Long photoId) {
         try {
             PostPhoto postPhoto = postPhotoRepo.findById(photoId)

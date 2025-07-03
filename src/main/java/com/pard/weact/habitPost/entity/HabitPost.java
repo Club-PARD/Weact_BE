@@ -21,6 +21,7 @@ public class HabitPost {
 
     private LocalDate date; // 2025-07-03
 
+
     private String userId; // 적은 사람 id
 
     @Column(nullable = true)
