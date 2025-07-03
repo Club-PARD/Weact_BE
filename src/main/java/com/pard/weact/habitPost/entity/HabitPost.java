@@ -1,12 +1,7 @@
 package com.pard.weact.habitPost.entity;
 
-
-import com.pard.weact.postPhoto.entity.PostPhoto;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 
@@ -20,19 +15,18 @@ public class HabitPost {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
     private String message;
 
-    @Column(nullable = true)
     private Boolean isHaemyeong;
 
-    private LocalDate date;
+    private LocalDate date; // 2025-07-03
 
-    private Long userId;
+    private String userId; // 적은 사람 id
 
     @Column(nullable = true)
     private Long photoId;
 
     private Long roomId;
-    private Long acceptResponseId; // 처음 수락한 유저 ID (nullable)
+
+
 }

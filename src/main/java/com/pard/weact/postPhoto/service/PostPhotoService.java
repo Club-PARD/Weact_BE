@@ -5,6 +5,7 @@ import com.pard.weact.postPhoto.entity.PostPhoto;
 import com.pard.weact.postPhoto.repo.PostPhotoRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -68,28 +69,32 @@ public class PostPhotoService {
         return postPhoto.getId();
     }
 
-    public ResponseEntity<byte[]> loadImageById(Long postId) throws IOException {
-        PostPhoto postPhoto = postPhotoRepo.findById(postId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 ID의 이미지가 존재하지 않습니다."));
+    public String getPhotoPathById(Long photoId) {
+        return postPhotoRepo.findById(photoId)
+                .map(PostPhoto::getPath)
+                .orElseThrow(() -> new IllegalArgumentException("이미지 정보가 없습니다."));
+    }
 
-        // 저장된 파일명 가져오기 (예: UUID_파일명.jpg)
-        String fileName = postPhoto.getUnique_name();
+    public ResponseEntity<byte[]> getImageResponseById(Long photoId) {
+        try {
+            PostPhoto postPhoto = postPhotoRepo.findById(photoId)
+                    .orElseThrow(() -> new IllegalArgumentException("사진이 존재하지 않습니다."));
 
-        // 파일 경로 구성
-        String basePath = System.getProperty("user.dir");
-        Path imagePath = Paths.get(basePath, uploadDir, fileName);
+            String fileName = postPhoto.getUnique_name();
+            Path path = Paths.get(System.getProperty("user.dir"), uploadDir, fileName);
 
-        // 파일 존재 여부 확인
-        if (!Files.exists(imagePath)) {
+            byte[] imageBytes = Files.readAllBytes(path);
+            String contentType = Files.probeContentType(path);
+
+            return ResponseEntity.ok()
+                    .header("Content-Type", contentType != null ? contentType : "image/jpeg")
+                    .body(imageBytes);
+
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+
+        } catch (IllegalArgumentException e) {
             return ResponseEntity.notFound().build();
         }
-
-        // 파일을 byte[]로 읽기
-        byte[] imageBytes = Files.readAllBytes(imagePath);
-        String contentType = Files.probeContentType(imagePath);
-
-        return ResponseEntity.ok()
-                .header("Content-Type", contentType != null ? contentType : "image/jpeg")
-                .body(imageBytes);
     }
 }

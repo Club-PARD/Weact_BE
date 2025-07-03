@@ -20,11 +20,7 @@ public class PostPhotoController {
     // image 잘 들어갔나 확인 용도
     @GetMapping("/image/{postPhotoId}")
     public ResponseEntity<byte[]> getImageById(@PathVariable Long postPhotoId) {
-        try {
-            return postPhotoService.loadImageById(postPhotoId); // Service에서 처리
-        } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+        return postPhotoService.getImageResponseById(postPhotoId);
     }
 
 }

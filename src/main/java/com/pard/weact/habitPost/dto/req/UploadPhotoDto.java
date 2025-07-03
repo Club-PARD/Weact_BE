@@ -7,6 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class UploadPhotoDto {
 
     private MultipartFile photo; // 인증 사진
