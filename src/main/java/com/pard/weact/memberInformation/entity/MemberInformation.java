@@ -1,4 +1,56 @@
 package com.pard.weact.memberInformation.entity;
 
+import com.pard.weact.User.entity.User;
+import com.pard.weact.room.entity.Room;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import java.util.Date;
+
+@Entity
+@Getter @Builder
+@AllArgsConstructor @NoArgsConstructor
 public class MemberInformation {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    // 방에 속해있는 유저 정보
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    // 방 정보
+    @ManyToOne
+    @JoinColumn(name = "room_id")
+    private Room room;
+
+    // 유저의 개인 필드
+    private int habitCount = 0;
+    private int worstCount = 0;
+    private String habit;
+    private Date remindTime;
+    private int percent;
+
+    public void update(String habit, Date remindTime){
+        this.habit = habit;
+        this.remindTime = remindTime;
+    }
+
+    public int updateAndGetPercent(int dayCount){
+        return this.percent = (int) ((float)habitCount / (float) dayCount * 100);
+    }
+
+    public void plusHabitCount(){
+        habitCount ++;
+    }
+
+    public void plusWorstCount(){
+        worstCount ++;
+    }
+
+
 }

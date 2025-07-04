@@ -1,11 +1,16 @@
 package com.pard.weact.User.entity;
 
-import com.pard.weact.User.dto.req.CreateUser;
+import com.pard.weact.User.dto.req.CreateUserDto;
+import com.pard.weact.UserInvite.entity.UserInvite;
+import com.pard.weact.memberInformation.entity.MemberInformation;
+import com.pard.weact.room.entity.Room;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Entity
 @Getter
@@ -16,6 +21,12 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserInvite> invites;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MemberInformation> memberInfos;
 
     private String userName;
 
@@ -29,7 +40,7 @@ public class User {
     private String profilePhoto;
 
     // update 할때 공백인 부분 있으면 알아서 걸러서 수정해줌
-    public void update(CreateUser req) {
+    public void update(CreateUserDto req) {
         if (req.getUserName() != null && !req.getUserName().trim().isEmpty()) {
             this.userName = req.getUserName();
         }

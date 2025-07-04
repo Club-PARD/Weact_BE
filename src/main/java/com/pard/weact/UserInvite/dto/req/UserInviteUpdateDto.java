@@ -1,4 +1,11 @@
 package com.pard.weact.UserInvite.dto.req;
 
-public class UserInviteUpdate {
+import lombok.*;
+
+@Getter @Setter @Builder
+@AllArgsConstructor @NoArgsConstructor
+public class UserInviteUpdateDto {
+    private Long userInviteId;
+
+    private int state;
 }

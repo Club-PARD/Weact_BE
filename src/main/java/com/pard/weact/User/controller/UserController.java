@@ -1,10 +1,9 @@
 package com.pard.weact.User.controller;
 
-import com.pard.weact.User.dto.req.CreateUser;
-import com.pard.weact.User.dto.res.ReadAllUser;
+import com.pard.weact.User.dto.req.CreateUserDto;
+import com.pard.weact.User.dto.res.ReadAllUserDto;
+import com.pard.weact.User.dto.res.SearchUserDto;
 import com.pard.weact.User.service.UserService;
-import lombok.Locked;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,21 +22,26 @@ public class UserController {
 
     // 회원가입
     @PostMapping("/")
-    public ResponseEntity<String> createUser(@RequestBody CreateUser req) {
+    public ResponseEntity<String> createUser(@RequestBody CreateUserDto req) {
         userService.createUser(req);
         return ResponseEntity.status(HttpStatus.CREATED).body("회원가입 완료");
     }
 
     // 모든 리스트 보기
     @GetMapping("/")
-    public ResponseEntity<List<ReadAllUser>> readAll() {
-        List<ReadAllUser> users = userService.readAll();
+    public ResponseEntity<List<ReadAllUserDto>> readAll() {
+        List<ReadAllUserDto> users = userService.readAll();
         return ResponseEntity.ok(users);
+    }
+
+    @GetMapping("/search")
+    public List<SearchUserDto> searchUser(@PathVariable String keyword){
+        return userService.searchUser(keyword);
     }
 
     // 수정
     @PatchMapping("/{id}")
-    public ResponseEntity<String> updateById(@PathVariable Long id, @RequestBody CreateUser req) {
+    public ResponseEntity<String> updateById(@PathVariable Long id, @RequestBody CreateUserDto req) {
         userService.updateById(id, req);
         return ResponseEntity.ok("입력한 " + id + "번 내용 수정완료!");
     }
