@@ -1,6 +1,7 @@
 package com.pard.weact.User.service;
 
 import com.pard.weact.User.dto.req.CreateUserDto;
+import com.pard.weact.User.dto.res.AddUserDto;
 import com.pard.weact.User.dto.res.AfterCreateUserDto;
 import com.pard.weact.User.dto.res.ReadAllUserDto;
 import com.pard.weact.User.dto.res.SearchUserDto;
@@ -53,8 +54,8 @@ public class UserService {
         return readAllUserDtos;
     }
 
-    public List<SearchUserDto> searchUser(String keyword){
-        List<User> users = userRepo.findByUserIdContaining(keyword);
+    public List<SearchUserDto> searchUser(String userId){
+        List<User> users = userRepo.findByUserIdContaining(userId);
 
         return users.stream()
                 .map( user -> SearchUserDto.builder()
@@ -62,6 +63,15 @@ public class UserService {
                         .id(user.getId())
                         .build())
                 .toList();
+    }
+
+    public AddUserDto addUser(String userId){
+        User user = userRepo.findByUserId(userId).orElseThrow();
+
+        return AddUserDto.builder()
+                .id(user.getId())
+                .userId(user.getUserId())
+                .build();
     }
 
     @Transactional

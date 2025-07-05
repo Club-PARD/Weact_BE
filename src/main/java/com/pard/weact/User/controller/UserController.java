@@ -1,6 +1,7 @@
 package com.pard.weact.User.controller;
 
 import com.pard.weact.User.dto.req.CreateUserDto;
+import com.pard.weact.User.dto.res.AddUserDto;
 import com.pard.weact.User.dto.res.AfterCreateUserDto;
 import com.pard.weact.User.dto.res.ReadAllUserDto;
 import com.pard.weact.User.dto.res.SearchUserDto;
@@ -36,9 +37,15 @@ public class UserController {
     }
 
     // userId로 검색
-    @GetMapping("/search/{keyword}")
-    public List<SearchUserDto> searchUser(@PathVariable String keyword){
-        return userService.searchUser(keyword);
+    @GetMapping("/search/{userId}")
+    public List<SearchUserDto> searchUser(@PathVariable String userId){
+        return userService.searchUser(userId);
+    }
+
+    // user 초대 목록에 추가
+    @GetMapping("/search/add/{userId}")
+    public AddUserDto addUser(@PathVariable String userId){
+        return userService.addUser(userId);
     }
 
     // 수정
