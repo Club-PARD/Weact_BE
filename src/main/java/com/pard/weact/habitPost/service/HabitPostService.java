@@ -2,10 +2,13 @@ package com.pard.weact.habitPost.service;
 
 import com.pard.weact.User.service.UserService;
 import com.pard.weact.habitPost.dto.req.CreateHabitPostDto;
-import com.pard.weact.habitPost.dto.res.PostResultDto;
+import com.pard.weact.habitPost.dto.res.PostResultListDto;
+import com.pard.weact.habitPost.dto.res.PostResultOneDto;
 import com.pard.weact.habitPost.dto.req.UploadPhotoDto;
 import com.pard.weact.habitPost.entity.HabitPost;
 import com.pard.weact.habitPost.repo.HabitPostRepo;
+import com.pard.weact.liked.service.LikeService;
+import com.pard.weact.postPhoto.entity.PostPhoto;
 import com.pard.weact.postPhoto.service.PostPhotoService;
 
 import lombok.RequiredArgsConstructor;
@@ -23,61 +26,64 @@ public class HabitPostService {
     private final HabitPostRepo habitPostRepo;
     private final PostPhotoService postPhotoService;
     private final UserService userService;
+    private final LikeService likeService;
 
+    public Long createPost(UploadPhotoDto photo, CreateHabitPostDto request) {
+        HabitPost post;
 
-    public void createPost(UploadPhotoDto photo, CreateHabitPostDto request) { // 인증을 올리면 일단 저장하고 상태만 바꾸기
-        try {
-            if (request.getIsHaemyeong()) { // 해명 글 -> 사진 필요 x, 다른 사람 인증 필요x
-                HabitPost post = HabitPost.builder()
-                        .userId(request.getUserId())
-                        .message(request.getMessage())
-                        .isHaemyeong(true)
-                        .date(LocalDate.now())
-                        .roomId(request.getRoomId())
-                        .build();
-
-                habitPostRepo.save(post);
-            } else { // 일반적인 인증 글 -> 사진 필요 o, 다른 사람 인증 필요 o
-                Long photoId = postPhotoService.saveImage(photo.getPhoto()); // IOException 발생 가능
-
-                HabitPost post = HabitPost.builder()
-                        .userId(request.getUserId())
-                        .message(request.getMessage())
-                        .isHaemyeong(true)
-                        .date(LocalDate.now())
-                        .roomId(request.getRoomId())
-                        .photoId(photoId) // 사진 추가
-                        .build();
-
-                habitPostRepo.save(post);
+        if (request.getIsHaemyeong()) { // 해명 글 -> 사진 필요 x, 다른 사람 인증 필요x
+            post = HabitPost.builder()
+                    .userId(request.getUserId())
+                    .message(request.getMessage())
+                    .isHaemyeong(true)
+                    .date(LocalDate.now())
+                    .roomId(request.getRoomId())
+                    .build();
+        } else { // 일반적인 인증 글 -> 사진 필요 o, 다른 사람 인증 필요 o
+            Long photoId;
+            try {
+                photoId = postPhotoService.save(photo.getPhoto()); // 실제 PostPhoto 객체 반환
+            } catch (IOException e) {
+                throw new RuntimeException("사진 저장 중 오류가 발생했습니다.", e);
             }
-        } catch (IOException e) {
-            // 예외 로그 출력
-            throw new RuntimeException("사진 저장에 실패했습니다.");
+
+            post = HabitPost.builder()
+                    .userId(request.getUserId())
+                    .message(request.getMessage())
+                    .isHaemyeong(false) // ← 여기 원래 false 아닌가요? 위에 true로 되어 있었음
+                    .date(LocalDate.now())
+                    .roomId(request.getRoomId())
+                    .photoId(photoId)
+                    .build();
         }
+
+        habitPostRepo.save(post);
+        return post.getId();
     }
 
-    public List<PostResultDto> readAllInRoom(Long roomId, LocalDate date) {
-        List<HabitPost> posts = habitPostRepo.findAllByRoomIdAndDate(roomId,date);
 
-        List<PostResultDto> result = new ArrayList<>();
+    public List<PostResultListDto> readAllInRoom(Long roomId, LocalDate date) {
+        List<HabitPost> posts = habitPostRepo.findAllByRoomIdAndDate(roomId, date);
+
+        List<PostResultListDto> result = new ArrayList<>();
         for (HabitPost post : posts) {
-            PostResultDto dto = convertIntoDto(post);
+            PostResultListDto dto = convertListIntoDto(post); // likeCount 포함, liked는 null
             result.add(dto);
         }
 
         return result;
     }
 
-    public PostResultDto readOneInRoom(String userId, Long roomId, LocalDate date) {
-        HabitPost post = habitPostRepo.findByUserIdAndRoomIdAndDate(userId, roomId, date)
-                .orElseThrow(() -> new IllegalArgumentException("해당 사용자의 게시글이 존재하지 않습니다."));
 
-        return convertIntoDto(post);
+    public PostResultOneDto readOneInRoom(String userId, Long postId) {
+        HabitPost post = habitPostRepo.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다."));
+
+        return convertOneIntoDto(post, userId);
     }
 
-    private PostResultDto convertIntoDto(HabitPost post) { // dto 가공 함수
 
+    private PostResultListDto convertListIntoDto(HabitPost post) {
         String userName = userService.getUserNameById(post.getUserId());
 
         String path = null;
@@ -85,11 +91,39 @@ public class HabitPostService {
             path = postPhotoService.getPhotoPathById(post.getPhotoId());
         }
 
-        return PostResultDto.builder()
+        Long likeCount = likeService.countLikes(post.getId());
+
+        return PostResultListDto.builder()
+                .userName(userName)
+                .imageUrl(path)
+                .likeCount(likeCount)
+                .build();
+    }
+
+    private PostResultOneDto convertOneIntoDto(HabitPost post, String viewingUserId) {
+        String userName = userService.getUserNameById(post.getUserId());
+
+        String path = null;
+        if (post.getPhotoId() != null) {
+            path = postPhotoService.getPhotoPathById(post.getPhotoId());
+        }
+
+        Long likeCount = likeService.countLikes(post.getId());
+
+        Boolean liked = null;
+
+        if (viewingUserId != null) {
+            liked = likeService.isLiked(viewingUserId, post.getId());
+        }
+
+        return PostResultOneDto.builder()
                 .userName(userName)
                 .message(post.getMessage())
                 .imageUrl(path)
+                .likeCount(likeCount)
+                .liked(liked)
                 .build();
     }
+
 
 }

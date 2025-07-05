@@ -2,7 +2,10 @@ package com.pard.weact.habitPost.controller;
 
 
 import com.pard.weact.habitPost.dto.req.CreateHabitPostDto;
-import com.pard.weact.habitPost.dto.res.PostResultDto;
+import com.pard.weact.habitPost.dto.req.ReadAllInRoomRequest;
+import com.pard.weact.habitPost.dto.req.ReadOneRequest;
+import com.pard.weact.habitPost.dto.res.PostResultListDto;
+import com.pard.weact.habitPost.dto.res.PostResultOneDto;
 import com.pard.weact.habitPost.service.HabitPostService;
 import com.pard.weact.habitPost.dto.req.UploadPhotoDto;
 import lombok.RequiredArgsConstructor;
@@ -24,32 +27,24 @@ public class HabitPostController {
     private final HabitPostService habitPostService;
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<String> createHabitPost(@RequestPart("file") MultipartFile file , @RequestPart("request") CreateHabitPostDto request) {
+    public ResponseEntity<Long> createHabitPost(@RequestPart("file") MultipartFile file , @RequestPart("request") CreateHabitPostDto request) {
         UploadPhotoDto photo = new UploadPhotoDto(file);
-        habitPostService.createPost(photo,request);
-        return ResponseEntity.ok("게시글이 성공적으로 등록되었습니다.");
+        Long postId = habitPostService.createPost(photo,request);
+        return ResponseEntity.ok(postId);
     }
 
     @GetMapping("")
-    public ResponseEntity<List<PostResultDto>> readAllInRoom(
-            @RequestParam Long roomId,
-            @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date //2025-01-01 이런 식으로 넣으면 됨.
-    ) {
-        //like 추가
-        List<PostResultDto> result = habitPostService.readAllInRoom(roomId,date);
+    public ResponseEntity<List<PostResultListDto>> readAllInRoom(@RequestBody ReadAllInRoomRequest request) {
+        List<PostResultListDto> result = habitPostService.readAllInRoom(request.getRoomId(), request.getDate());
         return ResponseEntity.ok(result);
     }
 
-    @GetMapping("/one")
-    public ResponseEntity<PostResultDto> readOne(
-            @RequestParam String userId,
-            @RequestParam Long roomId,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
-    ) {
-        // like 추가
-        PostResultDto dto = habitPostService.readOneInRoom(userId, roomId, date);
+    @PostMapping("/one")  // GET → POST로 변경
+    public ResponseEntity<PostResultOneDto> readOne(@RequestBody ReadOneRequest request) {
+        PostResultOneDto dto = habitPostService.readOneInRoom(request.getUserId(), request.getPostId());
         return ResponseEntity.ok(dto);
     }
+
 
 
 

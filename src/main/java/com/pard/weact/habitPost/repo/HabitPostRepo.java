@@ -9,5 +9,5 @@ import java.util.Optional;
 
 public interface HabitPostRepo extends JpaRepository<HabitPost,Long> {
     List<HabitPost> findAllByRoomIdAndDate(Long roomId,LocalDate date);
-    Optional<HabitPost> findByUserIdAndRoomIdAndDate(String userId, Long roomId, LocalDate date);
+
 }
