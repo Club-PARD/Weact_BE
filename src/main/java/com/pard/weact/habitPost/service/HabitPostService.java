@@ -2,18 +2,17 @@ package com.pard.weact.habitPost.service;
 
 import com.pard.weact.User.service.UserService;
 import com.pard.weact.habitPost.dto.req.CreateHabitPostDto;
+import com.pard.weact.habitPost.dto.req.UploadPhotoDto;
 import com.pard.weact.habitPost.dto.res.PostResultListDto;
 import com.pard.weact.habitPost.dto.res.PostResultOneDto;
-import com.pard.weact.habitPost.dto.req.UploadPhotoDto;
 import com.pard.weact.habitPost.entity.HabitPost;
 import com.pard.weact.habitPost.repo.HabitPostRepo;
 import com.pard.weact.liked.service.LikeService;
 import com.pard.weact.postPhoto.entity.PostPhoto;
 import com.pard.weact.postPhoto.service.PostPhotoService;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -29,10 +28,12 @@ public class HabitPostService {
     private final UserService userService;
     private final LikeService likeService;
 
+    @Transactional
     public Long createPost(UploadPhotoDto photo, CreateHabitPostDto request) {
         HabitPost post;
 
         if (request.getIsHaemyeong()) {
+            // 해명일 경우 사진 없이 저장
             post = HabitPost.builder()
                     .userId(request.getUserId())
                     .message(request.getMessage())
@@ -40,17 +41,20 @@ public class HabitPostService {
                     .date(LocalDate.now())
                     .roomId(request.getRoomId())
                     .build();
+
+            habitPostRepo.save(post);
+
         } else {
+            // 사진이 있는 경우
             PostPhoto savedPhoto;
             try {
-                Long photoId = postPhotoService.save(photo.getPhoto());
-                savedPhoto = PostPhoto.builder()
-                        .id(photoId)
-                        .build();
+                // 사진 저장 시 영속 상태 PostPhoto 객체를 받아옴
+                savedPhoto = postPhotoService.save(photo.getPhoto());
             } catch (IOException e) {
                 throw new RuntimeException("사진 저장 중 오류가 발생했습니다.", e);
             }
 
+            // 저장된 PostPhoto 엔티티를 HabitPost에 세팅
             post = HabitPost.builder()
                     .userId(request.getUserId())
                     .message(request.getMessage())
@@ -59,9 +63,10 @@ public class HabitPostService {
                     .roomId(request.getRoomId())
                     .photo(savedPhoto)
                     .build();
+
+            habitPostRepo.save(post);
         }
 
-        habitPostRepo.save(post);
         return post.getId();
     }
 

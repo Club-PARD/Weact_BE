@@ -28,7 +28,7 @@ public class PostPhotoService {
     private String uploadDir;
 
 
-    public Long save(MultipartFile file) throws IOException {
+    public PostPhoto save(MultipartFile file) throws IOException {
 
         // 클라이언트가 업로드한 원본 파일 이름 추출 (예: dog.jpg)
         String originalFileName = file.getOriginalFilename();
@@ -67,7 +67,7 @@ public class PostPhotoService {
         postPhotoRepo.save(postPhoto);
 
         // id를 클라이언트에 반환
-        return postPhoto.getId();
+        return postPhoto;
     }
 
     public String getPhotoPathById(Long photoId) {
