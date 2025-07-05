@@ -22,7 +22,7 @@ public class SwaggerConfig {
         return new Info()
                 .title("Weact")
                 .description("Weact 스웨거")
-                .version("1.0.0");
+                .version("1.6.9");
     }
 
     //http://localhost:8080/swagger-ui/index.html
