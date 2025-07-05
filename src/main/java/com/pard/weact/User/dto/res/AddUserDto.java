@@ -5,6 +5,7 @@ import lombok.*;
 @NoArgsConstructor @AllArgsConstructor
 @Getter @Setter @Builder
 public class AddUserDto {
+    private Long id;
     private String userId;
 }
 

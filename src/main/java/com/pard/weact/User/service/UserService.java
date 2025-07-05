@@ -68,8 +68,10 @@ public class UserService {
     public AddUserDto addUser(String userId){
         User user = userRepo.findByUserId(userId).orElseThrow();
 
-
-
+        return AddUserDto.builder()
+                .id(user.getId())
+                .userId(user.getUserId())
+                .build();
     }
 
     @Transactional
