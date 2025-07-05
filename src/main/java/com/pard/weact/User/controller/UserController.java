@@ -1,6 +1,7 @@
 package com.pard.weact.User.controller;
 
 import com.pard.weact.User.dto.req.CreateUserDto;
+import com.pard.weact.User.dto.res.AfterCreateUserDto;
 import com.pard.weact.User.dto.res.ReadAllUserDto;
 import com.pard.weact.User.dto.res.SearchUserDto;
 import com.pard.weact.User.service.UserService;
@@ -22,9 +23,9 @@ public class UserController {
 
     // 회원가입
     @PostMapping("/")
-    public ResponseEntity<String> createUser(@RequestBody CreateUserDto req) {
-        userService.createUser(req);
-        return ResponseEntity.status(HttpStatus.CREATED).body("회원가입 완료");
+    public ResponseEntity<AfterCreateUserDto> createUser(@RequestBody CreateUserDto req) {
+        AfterCreateUserDto afterCreateUserDto = userService.createUser(req);
+        return ResponseEntity.status(HttpStatus.CREATED).body(afterCreateUserDto);
     }
 
     // 모든 리스트 보기
@@ -34,7 +35,8 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
-    @GetMapping("/search")
+    // userId로 검색
+    @GetMapping("/search/{keyword}")
     public List<SearchUserDto> searchUser(@PathVariable String keyword){
         return userService.searchUser(keyword);
     }

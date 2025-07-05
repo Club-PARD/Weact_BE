@@ -1,6 +1,7 @@
 package com.pard.weact.User.service;
 
 import com.pard.weact.User.dto.req.CreateUserDto;
+import com.pard.weact.User.dto.res.AfterCreateUserDto;
 import com.pard.weact.User.dto.res.ReadAllUserDto;
 import com.pard.weact.User.dto.res.SearchUserDto;
 import com.pard.weact.User.entity.User;
@@ -20,7 +21,7 @@ import org.springframework.web.server.ResponseStatusException;
 public class UserService {
     private final UserRepo userRepo;
 
-    public void createUser(CreateUserDto req){
+    public AfterCreateUserDto createUser(CreateUserDto req){
 
         // 아이디가 중복이라면 회원가입 못하게 막아둠.
         if(userRepo.existsByUserId(req.getUserId())){
@@ -34,6 +35,10 @@ public class UserService {
                 .pw(req.getPw())
                 .build();
         userRepo.save(user);
+
+        return AfterCreateUserDto.builder()
+                .userId(user.getUserId())
+                .id(user.getId()).build();
     }
 
     public List<ReadAllUserDto> readAll(){
@@ -53,7 +58,8 @@ public class UserService {
 
         return users.stream()
                 .map( user -> SearchUserDto.builder()
-                        .userIdName(user.getUserId())
+                        .userId(user.getUserId())
+                        .id(user.getId())
                         .build())
                 .toList();
     }

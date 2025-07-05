@@ -16,6 +16,7 @@ import java.util.Date;
 public class MemberInformation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "member_information_id")
     private Long id;
 
     // 방에 속해있는 유저 정보

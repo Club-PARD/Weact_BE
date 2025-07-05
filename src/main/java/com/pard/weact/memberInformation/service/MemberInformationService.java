@@ -3,12 +3,16 @@ package com.pard.weact.memberInformation.service;
 import com.pard.weact.User.entity.User;
 import com.pard.weact.User.repo.UserRepo;
 import com.pard.weact.memberInformation.dto.req.UpdateHabitAndRemindTimeDto;
+import com.pard.weact.memberInformation.dto.res.HamburgerInfoDto;
+import com.pard.weact.memberInformation.dto.res.MemberNameAndHabitDto;
 import com.pard.weact.memberInformation.entity.MemberInformation;
 import com.pard.weact.memberInformation.repository.MemberInformationRepo;
 import com.pard.weact.room.entity.Room;
 import com.pard.weact.room.repository.RoomRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -41,5 +45,25 @@ public class MemberInformationService {
         memberInformation.updateAndGetPercent(room.getDayCount());
 
         memberInformationRepo.save(memberInformation);
+    }
+
+    public HamburgerInfoDto showHamburgerBar(Long userId, Long roomId){
+        User user = userRepo.findById(userId).orElseThrow();
+        MemberInformation memberMe = memberInformationRepo.findByUserIdAndRoomId(userId, roomId);
+        List<MemberInformation> memberInfos =  memberInformationRepo.findAllByRoomIdAndUserIdNot(roomId, userId);
+
+        List<MemberNameAndHabitDto> memberNameAndHabitDtos = memberInfos.stream().map(
+                memberInfo -> MemberNameAndHabitDto.builder()
+                        .memberName(memberInfo.getUser().getUserName())
+                        .memberHabit(memberInfo.getHabit())
+                        .build()
+        ).toList();
+
+        return HamburgerInfoDto.builder()
+                .myName(user.getUserName())
+                .myHabit(memberMe.getHabit())
+                .myPercent(memberMe.getPercent())
+                .memberNameAndHabitDtos(memberNameAndHabitDtos)
+                .build();
     }
 }

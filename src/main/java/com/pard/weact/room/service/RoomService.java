@@ -11,6 +11,8 @@ import com.pard.weact.room.repository.RoomRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @Service
 public class RoomService {
@@ -39,14 +41,14 @@ public class RoomService {
         memberInformationService.createMemberInformation(creator, room);
 
         // 나머지 인원에 대해서는 초대장 만들기 (초대받은 사람들 id, 만든 사람 이름, room)
-        userInviteService.createUserInvites(createRoomDto.getInvitedIds(), room ,creatorName);
+        List<Long> userInviteIds = userInviteService.createUserInvites(createRoomDto.getInvitedIds(), room ,creatorName);
 
         // 위에서 만든 초대장 보내기
         return AfterCreateRoomDto.builder()
                 .roomId(room.getId())
                 .roomName(room.getRoomName())
-                .creatorId(createRoomDto.getCreatorId())
                 .creatorName(creatorName)
+                .userInviteIds(userInviteIds)
                 .build();
     }
 }

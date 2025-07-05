@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 public class UserInvite {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_invite_id")
     private Long id;
 
     // 초대받은 유저 정보
