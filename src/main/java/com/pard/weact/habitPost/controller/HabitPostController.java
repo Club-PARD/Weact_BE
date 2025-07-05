@@ -34,14 +34,15 @@ public class HabitPostController {
     }
 
     @GetMapping("")
-    public ResponseEntity<List<PostResultListDto>> readAllInRoom(@RequestBody ReadAllInRoomRequest request) {
-        List<PostResultListDto> result = habitPostService.readAllInRoom(request.getRoomId(), request.getDate());
+    public ResponseEntity<List<PostResultListDto>> readAllInRoom(@RequestParam Long roomId,
+                                                                 @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+        List<PostResultListDto> result = habitPostService.readAllInRoom(roomId, date);
         return ResponseEntity.ok(result);
     }
 
-    @PostMapping("/one")  // GET → POST로 변경
-    public ResponseEntity<PostResultOneDto> readOne(@RequestBody ReadOneRequest request) {
-        PostResultOneDto dto = habitPostService.readOneInRoom(request.getUserId(), request.getPostId());
+    @GetMapping("/one")  // GET → POST로 변경
+    public ResponseEntity<PostResultOneDto> readOne(@RequestParam Long postId,@RequestParam String userId) {
+        PostResultOneDto dto = habitPostService.readOneInRoom(userId, postId);
         return ResponseEntity.ok(dto);
     }
 
