@@ -16,5 +16,4 @@ public class ReadAllUserDto {
     private String gender;
 
     private String userId;
-
 }

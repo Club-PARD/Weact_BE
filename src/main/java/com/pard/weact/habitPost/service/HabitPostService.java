@@ -13,6 +13,7 @@ import com.pard.weact.postPhoto.service.PostPhotoService;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -31,7 +32,7 @@ public class HabitPostService {
     public Long createPost(UploadPhotoDto photo, CreateHabitPostDto request) {
         HabitPost post;
 
-        if (request.getIsHaemyeong()) { // 해명 글 -> 사진 필요 x, 다른 사람 인증 필요x
+        if (request.getIsHaemyeong()) {
             post = HabitPost.builder()
                     .userId(request.getUserId())
                     .message(request.getMessage())
@@ -39,10 +40,13 @@ public class HabitPostService {
                     .date(LocalDate.now())
                     .roomId(request.getRoomId())
                     .build();
-        } else { // 일반적인 인증 글 -> 사진 필요 o, 다른 사람 인증 필요 o
-            Long photoId;
+        } else {
+            PostPhoto savedPhoto;
             try {
-                photoId = postPhotoService.save(photo.getPhoto()); // 실제 PostPhoto 객체 반환
+                Long photoId = postPhotoService.save(photo.getPhoto());
+                savedPhoto = PostPhoto.builder()
+                        .id(photoId)
+                        .build();
             } catch (IOException e) {
                 throw new RuntimeException("사진 저장 중 오류가 발생했습니다.", e);
             }
@@ -50,10 +54,10 @@ public class HabitPostService {
             post = HabitPost.builder()
                     .userId(request.getUserId())
                     .message(request.getMessage())
-                    .isHaemyeong(false) // ← 여기 원래 false 아닌가요? 위에 true로 되어 있었음
+                    .isHaemyeong(false)
                     .date(LocalDate.now())
                     .roomId(request.getRoomId())
-                    .photoId(photoId)
+                    .photo(savedPhoto)
                     .build();
         }
 
@@ -61,34 +65,27 @@ public class HabitPostService {
         return post.getId();
     }
 
-
     public List<PostResultListDto> readAllInRoom(Long roomId, LocalDate date) {
         List<HabitPost> posts = habitPostRepo.findAllByRoomIdAndDate(roomId, date);
-
         List<PostResultListDto> result = new ArrayList<>();
         for (HabitPost post : posts) {
-            PostResultListDto dto = convertListIntoDto(post); // likeCount 포함, liked는 null
-            result.add(dto);
+            result.add(convertListIntoDto(post));
         }
-
         return result;
     }
-
 
     public PostResultOneDto readOneInRoom(String userId, Long postId) {
         HabitPost post = habitPostRepo.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다."));
-
         return convertOneIntoDto(post, userId);
     }
-
 
     private PostResultListDto convertListIntoDto(HabitPost post) {
         String userName = userService.getUserNameById(post.getUserId());
 
         String path = null;
-        if (post.getPhotoId() != null) {
-            path = postPhotoService.getPhotoPathById(post.getPhotoId());
+        if (post.getPhoto() != null) {
+            path = postPhotoService.getPhotoPathById(post.getPhoto().getId());
         }
 
         Long likeCount = likeService.countLikes(post.getId());
@@ -104,14 +101,13 @@ public class HabitPostService {
         String userName = userService.getUserNameById(post.getUserId());
 
         String path = null;
-        if (post.getPhotoId() != null) {
-            path = postPhotoService.getPhotoPathById(post.getPhotoId());
+        if (post.getPhoto() != null) {
+            path = postPhotoService.getPhotoPathById(post.getPhoto().getId());
         }
 
         Long likeCount = likeService.countLikes(post.getId());
 
         Boolean liked = null;
-
         if (viewingUserId != null) {
             liked = likeService.isLiked(viewingUserId, post.getId());
         }
@@ -124,6 +120,4 @@ public class HabitPostService {
                 .liked(liked)
                 .build();
     }
-
-
 }
