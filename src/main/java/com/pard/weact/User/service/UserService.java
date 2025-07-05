@@ -87,4 +87,14 @@ public class UserService {
             throw new IllegalArgumentException("해당 아이디를 찾을 수 없습니다. ID: " + Id);
         }
     }
+    public String getUserNameById(String userId) {
+        Optional<User> optionalUser = userRepo.findByUserId(userId);
+        if(optionalUser.isPresent()) {
+            return optionalUser.get().getUserName();
+        }
+        else{
+            throw new IllegalArgumentException("해당 아이디를 찾을 수 없습니다. ID: " + userId);
+        }
+
+    }
 }
