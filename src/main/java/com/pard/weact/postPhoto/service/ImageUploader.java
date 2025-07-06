@@ -46,6 +46,6 @@ public class ImageUploader {
         } catch (final IOException e) {
             throw new RuntimeException("INVALID_IMAGE");
         }
-        return imageFile.getHashedName();
+        return s3Client.getUrl(bucket, path).toString();
     }
 }
