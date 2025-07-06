@@ -18,10 +18,15 @@ public class MemberInformationController {
         return memberInformationService.showHamburgerBar(userId, roomId);
     }
 
-    @PatchMapping("")
+    @PatchMapping("habitAndRemindTime")
     @Transactional
     public void updateHabitAndRemindTime(@RequestBody UpdateHabitAndRemindTimeDto updateHabitAndRemindTimeDto){
         memberInformationService.updateHabitAndRemindTime(updateHabitAndRemindTimeDto);
+    }
+
+    @PatchMapping("/{userId}/{roomId}")
+    public void updateTest(@PathVariable Long userId, @PathVariable Long roomId){
+        memberInformationService.plusHabitCount(userId, roomId);
     }
 
 

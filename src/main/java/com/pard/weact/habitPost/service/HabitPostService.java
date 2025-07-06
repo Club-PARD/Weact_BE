@@ -1,5 +1,7 @@
 package com.pard.weact.habitPost.service;
 
+import com.pard.weact.User.entity.User;
+import com.pard.weact.User.repo.UserRepo;
 import com.pard.weact.User.service.UserService;
 import com.pard.weact.habitPost.dto.req.CreateHabitPostDto;
 import com.pard.weact.habitPost.dto.req.UploadPhotoDto;
@@ -8,6 +10,7 @@ import com.pard.weact.habitPost.dto.res.PostResultOneDto;
 import com.pard.weact.habitPost.entity.HabitPost;
 import com.pard.weact.habitPost.repo.HabitPostRepo;
 import com.pard.weact.liked.service.LikeService;
+import com.pard.weact.memberInformation.service.MemberInformationService;
 import com.pard.weact.postPhoto.entity.PostPhoto;
 import com.pard.weact.postPhoto.service.PostPhotoService;
 import lombok.RequiredArgsConstructor;
@@ -27,10 +30,13 @@ public class HabitPostService {
     private final PostPhotoService postPhotoService;
     private final UserService userService;
     private final LikeService likeService;
+    private final MemberInformationService memberInformationService;
+    private final UserRepo userRepo;
 
     @Transactional
     public Long createPost(UploadPhotoDto photo, CreateHabitPostDto request) {
         HabitPost post;
+        User user = userRepo.findByUserId(request.getUserId()).orElseThrow();
 
         if (request.getIsHaemyeong()) {
             // 해명일 경우 사진 없이 저장
@@ -65,6 +71,9 @@ public class HabitPostService {
                     .build();
 
             habitPostRepo.save(post);
+
+            // 일반 post 완료시 달성율 갱신
+            memberInformationService.plusHabitCount(user.getId(), request.getRoomId());
         }
 
         return post.getId();

@@ -29,6 +29,7 @@ public class Room {
     private Date endDate;
 
     private String reward;
+    private int coin; // 코인 다 까이면 강퇴.
 
     private int dayCount; // 전체 날 수
     private int dayCountByWeek; // 주 n회

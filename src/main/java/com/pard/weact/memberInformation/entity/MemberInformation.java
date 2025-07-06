@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalTime;
 import java.util.Date;
 
 @Entity
@@ -33,16 +34,16 @@ public class MemberInformation {
     private int habitCount = 0;
     private int worstCount = 0;
     private String habit;
-    private Date remindTime;
+    private LocalTime remindTime;
     private int percent;
 
-    public void update(String habit, Date remindTime){
+    public void update(String habit, LocalTime remindTime){
         this.habit = habit;
         this.remindTime = remindTime;
     }
 
     public int updateAndGetPercent(int dayCount){
-        return this.percent = (int) ((float)habitCount / (float) dayCount * 100);
+        return this.percent = (int) (habitCount / (float) dayCount * 100);
     }
 
     public void plusHabitCount(){
