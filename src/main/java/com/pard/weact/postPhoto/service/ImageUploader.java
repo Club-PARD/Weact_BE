@@ -2,7 +2,9 @@ package com.pard.weact.postPhoto.service;
 
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -34,18 +36,25 @@ public class ImageUploader {
 
     private String uploadImage(final ImageFile imageFile) {
         final String path = folder + imageFile.getHashedName();
+
         final ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentType(imageFile.getContentType());
         metadata.setContentLength(imageFile.getSize());
         metadata.setCacheControl(CACHE_CONTROL_VALUE);
 
         try (final InputStream inputStream = imageFile.getInputStream()) {
-            s3Client.putObject(bucket, path, inputStream, metadata);
+            final PutObjectRequest putObjectRequest = new PutObjectRequest(bucket, path, inputStream, metadata)
+                    .withCannedAcl(CannedAccessControlList.PublicRead); // 🔑 공개 권한 설정
+
+            s3Client.putObject(putObjectRequest); // S3에 업로드
         } catch (final AmazonServiceException e) {
             throw new RuntimeException("INVALID_IMAGE_PATH");
         } catch (final IOException e) {
             throw new RuntimeException("INVALID_IMAGE");
         }
+
+        // 업로드된 파일의 전체 URL 반환
         return s3Client.getUrl(bucket, path).toString();
     }
+
 }

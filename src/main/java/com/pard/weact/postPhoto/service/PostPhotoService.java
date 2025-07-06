@@ -29,6 +29,7 @@ public class PostPhotoService {
                 .path(url)
                 .build();
 
+        System.out.println("Saving photo: " + url); // 또는 photo.getId()
         return postPhotoRepo.save(postPhoto);
     }
 

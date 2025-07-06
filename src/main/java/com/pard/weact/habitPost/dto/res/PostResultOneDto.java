@@ -1,6 +1,9 @@
 package com.pard.weact.habitPost.dto.res;
 
+import com.pard.weact.comment.dto.res.CommentDto;
 import lombok.*;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -11,6 +14,7 @@ public class PostResultOneDto {
     private String userName;
     private String message;
     private String imageUrl;
-    private Long likeCount; // 좋아요 수
-    private Boolean liked;  // 현재 로그인 유저가 누른 상태인지 여부 (readOne에서만 세팅됨)
+    private Long likeCount;
+    private Boolean liked;
+    private List<CommentDto> comments; // 댓글 목록
 }

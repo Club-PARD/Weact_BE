@@ -1,5 +1,6 @@
 package com.pard.weact.habitPost.entity;
 
+import com.pard.weact.comment.entity.Comment;
 import com.pard.weact.liked.entity.Liked;
 import com.pard.weact.memberInformation.entity.MemberInformation;
 import com.pard.weact.postPhoto.entity.PostPhoto;
@@ -26,12 +27,16 @@ public class HabitPost {
     private Room room;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "member_information_id")
     private MemberInformation member;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "photo_id")
     private PostPhoto photo;
+
+    @OneToMany(mappedBy = "habitPost", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> commentList = new ArrayList<>();
+
 
     private LocalDate date;
     private String message;

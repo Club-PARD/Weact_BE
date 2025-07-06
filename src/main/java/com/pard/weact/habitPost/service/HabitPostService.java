@@ -1,5 +1,8 @@
 package com.pard.weact.habitPost.service;
 
+import com.pard.weact.comment.dto.res.CommentDto;
+import com.pard.weact.comment.entity.Comment;
+import com.pard.weact.comment.repo.CommentRepo;
 import com.pard.weact.habitPost.dto.req.CreateHabitPostDto;
 import com.pard.weact.habitPost.dto.res.PostResultListDto;
 import com.pard.weact.habitPost.dto.res.PostResultOneDto;
@@ -29,9 +32,11 @@ public class HabitPostService {
     private final MemberInformationRepo memberRepo;
     private final PostPhotoService postPhotoService;
     private final LikedService likedService;
+    private final CommentRepo commentRepo;
 
     public Long createHabitPost(CreateHabitPostDto dto, MultipartFile image) throws IOException {
         PostPhoto photo = postPhotoService.uploadAndSave(image);
+        System.out.println("photo saved: " + (photo != null ? photo.getId() : "null")); // ✅ 이거 꼭 찍어보세요
 
         HabitPost post = HabitPost.builder()
                 .message(dto.getMessage())
@@ -96,13 +101,27 @@ public class HabitPostService {
             liked = likedService.isLiked(post.getId(), viewingMember.getId());
         }
 
+        List<Comment> commentList = commentRepo.findByHabitPostIdOrderByCreatedAtAsc(post.getId());
+
+        List<CommentDto> commentDtos = commentList.stream()
+                .map(c -> new CommentDto(
+                        c.getId(),
+                        c.getContent(),
+                        c.getWriter().getUser().getUserName(),
+                        c.getCreatedAt()
+                ))
+                .toList();
+
+        //3. builder에 .comments(commentDtos) 추가
         return PostResultOneDto.builder()
                 .userName(userName)
                 .message(post.getMessage())
                 .imageUrl(path)
                 .likeCount(likeCount)
                 .liked(liked)
+                .comments(commentDtos) // ← 이 줄만 추가하면 끝!
                 .build();
+
     }
 
 }

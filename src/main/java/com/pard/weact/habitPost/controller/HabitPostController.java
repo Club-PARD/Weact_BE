@@ -27,8 +27,8 @@ public class HabitPostController {
     private final HabitPostService habitPostService;
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Long> createHabitPost(@ModelAttribute CreateHabitPostDto dto,
-                                                @RequestParam("image") MultipartFile image) throws Exception {
+    public ResponseEntity<Long> createHabitPost(@RequestPart("image") MultipartFile image,
+                                                @RequestPart("request") CreateHabitPostDto dto) throws Exception {
         Long postId = habitPostService.createHabitPost(dto, image);
         return ResponseEntity.ok(postId);
     }
@@ -41,8 +41,8 @@ public class HabitPostController {
     }
 
     @GetMapping("/one")
-    public ResponseEntity<PostResultOneDto> readOne(@RequestParam Long postId,
-                                                    @RequestParam Long memberId) {
+    public ResponseEntity<PostResultOneDto> readOne(@RequestParam Long memberId,
+                                                    @RequestParam Long postId) {
         PostResultOneDto dto = habitPostService.readOneInRoom(memberId, postId);
         return ResponseEntity.ok(dto);
     }
