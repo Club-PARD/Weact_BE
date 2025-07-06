@@ -54,5 +54,10 @@ public class MemberInformation {
         worstCount ++;
     }
 
-
+    public boolean checkCoin(int coin){
+        if(this.worstCount == coin){
+            return true;
+        }else
+            return false;
+    }
 }

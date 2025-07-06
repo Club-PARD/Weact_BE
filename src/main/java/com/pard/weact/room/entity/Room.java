@@ -24,6 +24,7 @@ public class Room {
     private List<MemberInformation> memberInfos;
 
     private String roomName;
+    private int memberCount = 0;
 
     private Date startDate;
     private Date endDate;
@@ -33,5 +34,9 @@ public class Room {
 
     private int dayCount; // 전체 날 수
     private int dayCountByWeek; // 주 n회
+
+    public void plusMemberCount(){
+        this.memberCount ++;
+    }
 }
 

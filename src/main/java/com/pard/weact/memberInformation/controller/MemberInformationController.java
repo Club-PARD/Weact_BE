@@ -24,10 +24,15 @@ public class MemberInformationController {
         memberInformationService.updateHabitAndRemindTime(updateHabitAndRemindTimeDto);
     }
 
-    @PatchMapping("/{userId}/{roomId}")
+    @PatchMapping("/{userId}/{roomId}") // 인증 count 올라가는지 test 용도
     public void updateTest(@PathVariable Long userId, @PathVariable Long roomId){
         memberInformationService.plusHabitCount(userId, roomId);
     }
 
+    @PatchMapping("/coinTest/{userId}/{roomId}")
+    @Transactional
+    public String coinTest(@PathVariable Long userId, @PathVariable Long roomId){
+        return memberInformationService.plusWorstCount(userId, roomId);
+    }
 
 }

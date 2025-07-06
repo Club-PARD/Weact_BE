@@ -28,6 +28,8 @@ public class MemberInformationService {
                 .room(room)
                 .build()
         );
+
+        room.plusMemberCount();
     }
 
     public void updateHabitAndRemindTime(UpdateHabitAndRemindTimeDto updateHabitAndRemindTimeDto){
@@ -45,6 +47,19 @@ public class MemberInformationService {
         memberInformation.updateAndGetPercent(room.getDayCount());
 
         memberInformationRepo.save(memberInformation);
+    }
+
+    public String plusWorstCount(Long userId, Long rooId){
+        MemberInformation memberInformation = memberInformationRepo.findByUserIdAndRoomId(userId, rooId);
+        memberInformation.plusWorstCount();
+
+        Room room = roomRepo.findById(rooId).orElseThrow();
+        if(memberInformation.checkCoin(room.getCoin())){
+            memberInformationRepo.delete(memberInformation);
+            return "deleted";
+        }else{
+            return "not yet";
+        }
     }
 
     public HamburgerInfoDto showHamburgerBar(Long userId, Long roomId){
