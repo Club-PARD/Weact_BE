@@ -7,6 +7,8 @@ import lombok.*;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -82,6 +84,13 @@ public class Room {
         return result;
     }
 
+    public String getPeriodFormatted() {
+        LocalDate start = startDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate end = endDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M.d");
+        return start.format(formatter) + " - " + end.format(formatter);
+    }
 
 }
 
