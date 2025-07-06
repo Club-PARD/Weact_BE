@@ -1,19 +1,23 @@
 package com.pard.weact.User.service;
 
 import com.pard.weact.User.dto.req.CreateUserDto;
-import com.pard.weact.User.dto.res.AddUserDto;
-import com.pard.weact.User.dto.res.AfterCreateUserDto;
-import com.pard.weact.User.dto.res.ReadAllUserDto;
-import com.pard.weact.User.dto.res.SearchUserDto;
+import com.pard.weact.User.dto.res.*;
 import com.pard.weact.User.entity.User;
 import com.pard.weact.User.repo.UserRepo;
+import com.pard.weact.memberInformation.entity.MemberInformation;
+import com.pard.weact.memberInformation.repository.MemberInformationRepo;
+import com.pard.weact.room.entity.Room;
+import com.pard.weact.room.repository.RoomRepo;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.web.server.ResponseStatusException;
 
@@ -21,6 +25,8 @@ import org.springframework.web.server.ResponseStatusException;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepo userRepo;
+    private final RoomRepo roomRepo;
+    private final MemberInformationRepo memberInformationRepo;
 
     public AfterCreateUserDto createUser(CreateUserDto req){
 
@@ -40,6 +46,34 @@ public class UserService {
         return AfterCreateUserDto.builder()
                 .userId(user.getUserId())
                 .id(user.getId()).build();
+    }
+
+    public HomeScreenDto getHomeScreen(Long userId){
+        LocalDate today = LocalDate.now();
+        int month = today.getMonthValue();
+        int day = today.getDayOfMonth();
+
+        List<Room> rooms = memberInformationRepo.findByUserId(userId)
+                .stream()
+                .map(MemberInformation::getRoom)
+                .distinct()
+                .toList();
+
+
+        List<RoomInformationDto> roomInfos = rooms.stream()
+                .map(room -> RoomInformationDto.builder()
+                        .roomName(room.getRoomName())
+                        .dayCountByWeek(room.getDayCountByWeek())
+                        .period(room.getPeriodFormatted())
+                        .percent(memberInformationRepo.findByUserIdAndRoomId(userId, room.getId()).getPercent())
+                        .build())
+                .toList();
+
+        return HomeScreenDto.builder()
+                .month(month)
+                .day(day)
+                .roomInformationDtos(roomInfos)
+                .build();
     }
 
     public List<ReadAllUserDto> readAll(){

@@ -32,7 +32,9 @@ public class UserController {
 
     // 홈화면
     @GetMapping("/home/{userId}")
-    public HomeScreenDto getHomescreen
+    public HomeScreenDto getHomeScreen(@PathVariable Long userId){
+        return userService.getHomeScreen(userId);
+    }
 
     // userId로 검색
     @GetMapping("/search/{userId}")
