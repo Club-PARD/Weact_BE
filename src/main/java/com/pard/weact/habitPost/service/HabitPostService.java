@@ -31,7 +31,7 @@ public class HabitPostService {
     private final LikedService likedService;
 
     public Long createHabitPost(CreateHabitPostDto dto, MultipartFile image) throws IOException {
-        PostPhoto photo = postPhotoService.uploadAndSave(image, "habitposts");
+        PostPhoto photo = postPhotoService.uploadAndSave(image);
 
         HabitPost post = HabitPost.builder()
                 .message(dto.getMessage())
