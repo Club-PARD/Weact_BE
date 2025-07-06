@@ -49,17 +49,12 @@ public class MemberInformationService {
         memberInformationRepo.save(memberInformation);
     }
 
-    public String plusWorstCount(Long userId, Long rooId){
-        MemberInformation memberInformation = memberInformationRepo.findByUserIdAndRoomId(userId, rooId);
+    public String plusWorstCount(Long userId, Long roomId){
+        MemberInformation memberInformation = memberInformationRepo.findByUserIdAndRoomId(userId, roomId);
         memberInformation.plusWorstCount();
 
-        Room room = roomRepo.findById(rooId).orElseThrow();
-        if(memberInformation.checkCoin(room.getCoin())){
-            memberInformationRepo.delete(memberInformation);
-            return "deleted";
-        }else{
-            return "not yet";
-        }
+        Room room = roomRepo.findById(roomId).orElseThrow();
+
     }
 
     public HamburgerInfoDto showHamburgerBar(Long userId, Long roomId){
