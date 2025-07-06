@@ -1,6 +1,7 @@
 package com.pard.weact.liked.entity;
 
 import com.pard.weact.habitPost.entity.HabitPost;
+import com.pard.weact.memberInformation.entity.MemberInformation;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,20 +15,26 @@ import lombok.NoArgsConstructor;
 @Builder
 public class Liked {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue
     private Long id;
 
-    /** 좋아요 누른 사람의 ID (연관관계 없이 값만 저장) */
-    @Column(name = "user_id", nullable = false)
-    private String userId;
-
-    /** 좋아요가 눌린 게시물 */
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "habit_post_id", nullable = false)
+    @JoinColumn(name = "habit_post_id")
     private HabitPost habitPost;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private MemberInformation member;
 
+    private boolean liked;
+
+    public void like() {
+        this.liked = true;
+    }
+
+    public void unlike() {
+        this.liked = false;
+    }
 }
 
 

@@ -1,8 +1,10 @@
 package com.pard.weact.habitPost.entity;
 
 import com.pard.weact.liked.entity.Liked;
+import com.pard.weact.memberInformation.entity.MemberInformation;
 import com.pard.weact.postPhoto.entity.PostPhoto;
 
+import com.pard.weact.room.entity.Room;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -16,24 +18,25 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class HabitPost {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue
     private Long id;
 
-    private String message;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "room_id")
+    private Room room;
 
-    private Boolean isHaemyeong;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private MemberInformation member;
 
-    private LocalDate date;
-
-    private String userId;
-
-    private Long roomId;
-
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "post_photo_id")
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "photo_id")
     private PostPhoto photo;
 
+    private LocalDate date;
+    private String message;
+    private boolean isHaemyeong;
+
     @OneToMany(mappedBy = "habitPost", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Liked> likes = new ArrayList<>();
+    private List<Liked> likedList = new ArrayList<>();
 }

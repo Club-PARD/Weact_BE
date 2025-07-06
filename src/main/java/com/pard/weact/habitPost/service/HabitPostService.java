@@ -1,73 +1,48 @@
 package com.pard.weact.habitPost.service;
 
-import com.pard.weact.User.service.UserService;
 import com.pard.weact.habitPost.dto.req.CreateHabitPostDto;
-import com.pard.weact.habitPost.dto.req.UploadPhotoDto;
 import com.pard.weact.habitPost.dto.res.PostResultListDto;
 import com.pard.weact.habitPost.dto.res.PostResultOneDto;
 import com.pard.weact.habitPost.entity.HabitPost;
 import com.pard.weact.habitPost.repo.HabitPostRepo;
-import com.pard.weact.liked.service.LikeService;
+import com.pard.weact.liked.service.LikedService;
+import com.pard.weact.memberInformation.entity.MemberInformation;
+import com.pard.weact.memberInformation.repository.MemberInformationRepo;
 import com.pard.weact.postPhoto.entity.PostPhoto;
 import com.pard.weact.postPhoto.service.PostPhotoService;
+import com.pard.weact.room.repository.RoomRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-@Service
 @RequiredArgsConstructor
+@Service
 public class HabitPostService {
 
     private final HabitPostRepo habitPostRepo;
+    private final RoomRepo roomRepo;
+    private final MemberInformationRepo memberRepo;
     private final PostPhotoService postPhotoService;
-    private final UserService userService;
-    private final LikeService likeService;
+    private final LikedService likedService;
 
-    @Transactional
-    public Long createPost(UploadPhotoDto photo, CreateHabitPostDto request) {
-        HabitPost post;
+    public Long createHabitPost(CreateHabitPostDto dto, MultipartFile image) throws IOException {
+        PostPhoto photo = postPhotoService.uploadAndSave(image, "habitposts");
 
-        if (request.getIsHaemyeong()) {
-            // 해명일 경우 사진 없이 저장
-            post = HabitPost.builder()
-                    .userId(request.getUserId())
-                    .message(request.getMessage())
-                    .isHaemyeong(true)
-                    .date(LocalDate.now())
-                    .roomId(request.getRoomId())
-                    .build();
+        HabitPost post = HabitPost.builder()
+                .message(dto.getMessage())
+                .photo(photo)
+                .room(roomRepo.findById(dto.getRoomId()).orElseThrow())
+                .member(memberRepo.findById(dto.getMemberId()).orElseThrow())
+                .date(LocalDate.now())
+                .isHaemyeong(dto.getIsHaemyeong())
+                .build();
 
-            habitPostRepo.save(post);
-
-        } else {
-            // 사진이 있는 경우
-            PostPhoto savedPhoto;
-            try {
-                // 사진 저장 시 영속 상태 PostPhoto 객체를 받아옴
-                savedPhoto = postPhotoService.save(photo.getPhoto());
-            } catch (IOException e) {
-                throw new RuntimeException("사진 저장 중 오류가 발생했습니다.", e);
-            }
-
-            // 저장된 PostPhoto 엔티티를 HabitPost에 세팅
-            post = HabitPost.builder()
-                    .userId(request.getUserId())
-                    .message(request.getMessage())
-                    .isHaemyeong(false)
-                    .date(LocalDate.now())
-                    .roomId(request.getRoomId())
-                    .photo(savedPhoto)
-                    .build();
-
-            habitPostRepo.save(post);
-        }
-
-        return post.getId();
+        return habitPostRepo.save(post).getId();
     }
 
     public List<PostResultListDto> readAllInRoom(Long roomId, LocalDate date) {
@@ -79,21 +54,21 @@ public class HabitPostService {
         return result;
     }
 
-    public PostResultOneDto readOneInRoom(String userId, Long postId) {
+    public PostResultOneDto readOneInRoom(Long memberId, Long postId) {
         HabitPost post = habitPostRepo.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다."));
-        return convertOneIntoDto(post, userId);
+        return convertOneIntoDto(post, memberId);
     }
 
     private PostResultListDto convertListIntoDto(HabitPost post) {
-        String userName = userService.getUserNameById(post.getUserId());
+        String userName = post.getMember().getUser().getUserName();
 
         String path = null;
         if (post.getPhoto() != null) {
             path = postPhotoService.getPhotoPathById(post.getPhoto().getId());
         }
 
-        Long likeCount = likeService.countLikes(post.getId());
+        Long likeCount = likedService.countLikes(post.getId());
 
         return PostResultListDto.builder()
                 .userName(userName)
@@ -102,19 +77,23 @@ public class HabitPostService {
                 .build();
     }
 
-    private PostResultOneDto convertOneIntoDto(HabitPost post, String viewingUserId) {
-        String userName = userService.getUserNameById(post.getUserId());
+    private PostResultOneDto convertOneIntoDto(HabitPost post, Long viewingUserId) {
+        String userName = post.getMember().getUser().getUserName();
 
         String path = null;
         if (post.getPhoto() != null) {
             path = postPhotoService.getPhotoPathById(post.getPhoto().getId());
         }
 
-        Long likeCount = likeService.countLikes(post.getId());
+        Long likeCount = likedService.countLikes(post.getId());
 
         Boolean liked = null;
         if (viewingUserId != null) {
-            liked = likeService.isLiked(viewingUserId, post.getId());
+            MemberInformation viewingMember = memberRepo.findByUserIdAndRoomId(
+                    viewingUserId, post.getRoom().getId()
+            );
+
+            liked = likedService.isLiked(post.getId(), viewingMember.getId());
         }
 
         return PostResultOneDto.builder()
@@ -125,4 +104,5 @@ public class HabitPostService {
                 .liked(liked)
                 .build();
     }
+
 }

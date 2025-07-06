@@ -8,7 +8,7 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class CreateHabitPostDto {
-    private String userId;
+    private Long memberId;
     private String message;
     private Long roomId;
     private Boolean isHaemyeong;

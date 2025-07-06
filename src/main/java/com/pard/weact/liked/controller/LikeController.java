@@ -1,7 +1,6 @@
 package com.pard.weact.liked.controller;
 
-import com.pard.weact.liked.dto.res.LikeToggleDto;
-import com.pard.weact.liked.service.LikeService;
+import com.pard.weact.liked.service.LikedService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,12 +10,19 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/like")
 public class LikeController {
 
-    private final LikeService likeService;
 
-    @PostMapping("/toggle/{userId}/{postId}")
-    public ResponseEntity<LikeToggleDto> toggleLike(@RequestParam String userId,@PathVariable Long postId) {
-        LikeToggleDto response = likeService.toggleLike(userId, postId);
-        return ResponseEntity.ok(response);
+    private final LikedService likedService;
+
+    @PostMapping
+    public ResponseEntity<Void> like(@RequestParam Long postId, @RequestParam Long memberId) {
+        likedService.like(postId, memberId);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Void> unlike(@RequestParam Long postId, @RequestParam Long memberId) {
+        likedService.unlike(postId, memberId);
+        return ResponseEntity.ok().build();
     }
 }
 
