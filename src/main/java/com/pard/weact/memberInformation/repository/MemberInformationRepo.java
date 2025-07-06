@@ -55,4 +55,6 @@ public interface MemberInformationRepo extends JpaRepository<MemberInformation, 
     List<MemberInformation> findThirdPlaceMembersByRoomId(@Param("roomId") Long roomId);
 
     List<MemberInformation> findByRoomIdOrderByPercentDesc(Long roomId);
+
+    List<MemberInformation> findByRoomId(Long roomId);
 }

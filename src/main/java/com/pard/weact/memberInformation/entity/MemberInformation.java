@@ -9,7 +9,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalTime;
-import java.util.Date;
 
 @Entity
 @Getter @Builder
@@ -35,7 +34,8 @@ public class MemberInformation {
     private int worstCount = 0;
     private String habit;
     private LocalTime remindTime;
-    private int percent;
+    private int percent; // 달성율
+    private boolean isDoNothing = true; // 아무것도 안 올렸는지
 
     public void update(String habit, LocalTime remindTime){
         this.habit = habit;
@@ -59,5 +59,9 @@ public class MemberInformation {
             return true;
         }else
             return false;
+    }
+
+    public void updateDoNothing(){
+        this.isDoNothing = false;
     }
 }
