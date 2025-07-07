@@ -55,10 +55,19 @@ public class PostPhotoService {
         }
     }
     public PostPhoto getDefaultHaemyeongPhoto() {
-        // 방법 1: DB에서 고정 ID로 조회
-        return postPhotoRepo.findById(1L) // 나중에 이거 고쳐야 해!! 해명 이미지로
+        // 1. 고정된 해명 이미지 엔티티를 가져온다
+        PostPhoto defaultOriginal = postPhotoRepo.findById(1L)
                 .orElseThrow(() -> new IllegalArgumentException("기본 해명 이미지가 존재하지 않습니다."));
 
+        // 2. 기존 정보를 기반으로 새로운 이미지 엔티티 생성
+        PostPhoto copy = PostPhoto.builder()
+                .original_name(defaultOriginal.getOriginal_name())
+                .unique_name(UUID.randomUUID().toString()) // 새로 만든 uniqueName
+                .path(defaultOriginal.getPath()) // 동일한 경로 사용
+                .build();
+
+        // 3. 새 이미지로 저장
+        return postPhotoRepo.save(copy);
     }
 
 }

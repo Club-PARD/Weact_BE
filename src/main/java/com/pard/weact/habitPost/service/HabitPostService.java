@@ -41,15 +41,23 @@ public class HabitPostService {
     private final RoomService roomService;
 
     public Long createHabitPost(CreateHabitPostDto dto, MultipartFile image) throws IOException {
-        PostPhoto photo = postPhotoService.uploadAndSave(image);
-        System.out.println("photo saved: " + (photo != null ? photo.getId() : "null"));
 
         if (dto.getUserId() == null || dto.getRoomId() == null) {
             throw new IllegalArgumentException("UserId 또는 RoomId가 null입니다.");
         }
 
-        User user = userRepo.findById(dto.getUserId()).orElseThrow();
+
+        boolean exists = habitPostRepo.existsByUser_IdAndDateAndRoom_Id(dto.getUserId(), LocalDate.now(), dto.getRoomId());
+
+        if (exists) {
+            throw new IllegalStateException("이미 오늘 인증을 완료했습니다.");
+        }
+
+        PostPhoto photo = postPhotoService.uploadAndSave(image);
+        System.out.println("photo saved: " + (photo != null ? photo.getId() : "null"));
+
         MemberInformation member = memberRepo.findByUserIdAndRoomId(dto.getUserId(), dto.getRoomId());
+        User user = userRepo.findById(dto.getUserId()).orElseThrow();
         Room room = roomRepo.findById(dto.getRoomId()).orElseThrow();
 
 
@@ -78,15 +86,25 @@ public class HabitPostService {
             throw new IllegalArgumentException("UserId 또는 RoomId가 null입니다.");
         }
 
-        User user = userRepo.findById(dto.getUserId()).orElseThrow();
+
+        boolean exists = habitPostRepo.existsByUser_IdAndDateAndRoom_Id(dto.getUserId(), LocalDate.now(), dto.getRoomId());
+
+
+        if (exists) {
+            throw new IllegalStateException("이미 오늘 인증을 완료했습니다.");
+        }
+
         MemberInformation member = memberRepo.findByUserIdAndRoomId(dto.getUserId(), dto.getRoomId());
+        User user = userRepo.findById(dto.getUserId()).orElseThrow();
+        Room room = roomRepo.findById(dto.getRoomId()).orElseThrow();
+
 
         PostPhoto defaultPhoto = postPhotoService.getDefaultHaemyeongPhoto();
 
         HabitPost post = HabitPost.builder()
                 .message(dto.getMessage())
-                .photo(defaultPhoto) // 이미지 없이 저장
-                .room(roomRepo.findById(dto.getRoomId()).orElseThrow())
+                .photo(defaultPhoto) // 해명 이미지 저장
+                .room(room)
                 .user(user)
                 .member(member)
                 .date(LocalDate.now())
@@ -163,6 +181,7 @@ public class HabitPostService {
                 .comments(commentDtos)
                 .build();
     }
+
 
 
 }

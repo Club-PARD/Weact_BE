@@ -10,4 +10,5 @@ import java.util.Optional;
 public interface HabitPostRepo extends JpaRepository<HabitPost,Long> {
     List<HabitPost> findAllByRoomIdAndDate(Long roomId,LocalDate date);
 
+    boolean existsByUser_IdAndDateAndRoom_Id(Long userId, LocalDate date, Long roomId);
 }
