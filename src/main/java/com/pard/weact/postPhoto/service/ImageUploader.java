@@ -48,19 +48,16 @@ public class ImageUploader {
         System.out.println("- size: " + imageFile.getSize());
 
         try (final InputStream inputStream = imageFile.getInputStream()) {
-            final PutObjectRequest putObjectRequest = new PutObjectRequest(bucket, path, inputStream, metadata)
-                    .withCannedAcl(CannedAccessControlList.PublicRead); // 🔑 공개 권한 설정
-
-            s3Client.putObject(putObjectRequest); // S3에 업로드
+            final PutObjectRequest putObjectRequest = new PutObjectRequest(bucket, path, inputStream, metadata);
+            s3Client.putObject(putObjectRequest); // ✅ 퍼블릭 ACL 제거됨
         } catch (final AmazonServiceException e) {
-            e.printStackTrace(); // 🔍 로그 확인
+            e.printStackTrace();
             throw new RuntimeException("INVALID_IMAGE_PATH");
         } catch (final IOException e) {
-            e.printStackTrace(); // 🔍 로그 확인
+            e.printStackTrace();
             throw new RuntimeException("INVALID_IMAGE");
         }
 
-        // 업로드된 파일의 전체 URL 반환
         return s3Client.getUrl(bucket, path).toString();
     }
 

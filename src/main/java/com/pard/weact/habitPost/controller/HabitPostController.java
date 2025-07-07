@@ -1,6 +1,7 @@
 package com.pard.weact.habitPost.controller;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pard.weact.habitPost.dto.req.CreateHabitPostDto;
 import com.pard.weact.habitPost.dto.req.ReadAllInRoomRequest;
 import com.pard.weact.habitPost.dto.req.ReadOneRequest;
@@ -37,8 +38,8 @@ public class HabitPostController {
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Long> createHabitPost(
             @RequestPart("request") CreateHabitPostDto dto,
-            @RequestPart("image") MultipartFile image
-    ) throws Exception {
+            @RequestPart("image") MultipartFile image) throws Exception {
+
         Long postId = habitPostService.createHabitPost(dto, image);
         return ResponseEntity.ok(postId);
     }

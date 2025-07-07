@@ -41,6 +41,10 @@ public class HabitPostService {
         PostPhoto photo = postPhotoService.uploadAndSave(image);
         System.out.println("photo saved: " + (photo != null ? photo.getId() : "null"));
 
+        if (dto.getUserId() == null || dto.getRoomId() == null) {
+            throw new IllegalArgumentException("UserId 또는 RoomId가 null입니다.");
+        }
+
         User user = userRepo.findById(dto.getUserId()).orElseThrow();
         MemberInformation member = memberRepo.findByUserIdAndRoomId(dto.getUserId(), dto.getRoomId());
 
@@ -57,7 +61,7 @@ public class HabitPostService {
 
 
         return habitPostRepo.save(post).getId();
-    }
+    } // 해명하고 나뉘는 건 부차적인 문제
 
     public List<PostResultListDto> readAllInRoom(Long roomId, LocalDate date) {
         List<HabitPost> posts = habitPostRepo.findAllByRoomIdAndDate(roomId, date);
