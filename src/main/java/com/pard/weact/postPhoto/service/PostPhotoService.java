@@ -19,6 +19,9 @@ public class PostPhotoService {
     private final ImageUploader imageUploader;
 
     public PostPhoto uploadAndSave(MultipartFile file) {
+        if (file == null || file.isEmpty()) {
+            throw new IllegalArgumentException("파일이 비어 있습니다.");
+        }
         ImageFile imageFile = convertToImageFile(file);
 
         String url = imageUploader.uploadImages(List.of(imageFile)).get(0);  // 리스트로 넘기고 첫 번째 결과 받기

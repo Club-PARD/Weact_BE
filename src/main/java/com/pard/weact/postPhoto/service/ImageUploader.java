@@ -42,14 +42,21 @@ public class ImageUploader {
         metadata.setContentLength(imageFile.getSize());
         metadata.setCacheControl(CACHE_CONTROL_VALUE);
 
+        System.out.println("🪄 Uploading to S3:");
+        System.out.println("- file name: " + imageFile.getHashedName());
+        System.out.println("- contentType: " + imageFile.getContentType());
+        System.out.println("- size: " + imageFile.getSize());
+
         try (final InputStream inputStream = imageFile.getInputStream()) {
             final PutObjectRequest putObjectRequest = new PutObjectRequest(bucket, path, inputStream, metadata)
                     .withCannedAcl(CannedAccessControlList.PublicRead); // 🔑 공개 권한 설정
 
             s3Client.putObject(putObjectRequest); // S3에 업로드
         } catch (final AmazonServiceException e) {
+            e.printStackTrace(); // 🔍 로그 확인
             throw new RuntimeException("INVALID_IMAGE_PATH");
         } catch (final IOException e) {
+            e.printStackTrace(); // 🔍 로그 확인
             throw new RuntimeException("INVALID_IMAGE");
         }
 

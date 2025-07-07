@@ -1,5 +1,6 @@
 package com.pard.weact.habitPost.entity;
 
+import com.pard.weact.User.entity.User;
 import com.pard.weact.comment.entity.Comment;
 import com.pard.weact.liked.entity.Liked;
 import com.pard.weact.memberInformation.entity.MemberInformation;
@@ -19,13 +20,20 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class HabitPost {
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "room_id")
     private Room room;
 
+    // ✅ 직접적으로 user 연결
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    // ✅ 여전히 통계 용도로 사용
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_information_id")
     private MemberInformation member;
@@ -36,7 +44,6 @@ public class HabitPost {
 
     @OneToMany(mappedBy = "habitPost", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> commentList = new ArrayList<>();
-
 
     private LocalDate date;
     private String message;

@@ -9,5 +9,5 @@ import lombok.*;
 @Builder
 public class ReadOneRequest {
     private Long postId;
-    private Long memberId;
+    private Long userId;
 }

@@ -1,5 +1,7 @@
 package com.pard.weact.habitPost.service;
 
+import com.pard.weact.User.entity.User;
+import com.pard.weact.User.repo.UserRepo;
 import com.pard.weact.comment.dto.res.CommentDto;
 import com.pard.weact.comment.entity.Comment;
 import com.pard.weact.comment.repo.CommentRepo;
@@ -29,23 +31,30 @@ public class HabitPostService {
 
     private final HabitPostRepo habitPostRepo;
     private final RoomRepo roomRepo;
-    private final MemberInformationRepo memberRepo;
+    private final UserRepo userRepo;
     private final PostPhotoService postPhotoService;
     private final LikedService likedService;
     private final CommentRepo commentRepo;
+    private final MemberInformationRepo memberRepo;
 
     public Long createHabitPost(CreateHabitPostDto dto, MultipartFile image) throws IOException {
         PostPhoto photo = postPhotoService.uploadAndSave(image);
-        System.out.println("photo saved: " + (photo != null ? photo.getId() : "null")); // ✅ 이거 꼭 찍어보세요
+        System.out.println("photo saved: " + (photo != null ? photo.getId() : "null"));
+
+        User user = userRepo.findById(dto.getUserId()).orElseThrow();
+        MemberInformation member = memberRepo.findByUserIdAndRoomId(dto.getUserId(), dto.getRoomId());
+
 
         HabitPost post = HabitPost.builder()
                 .message(dto.getMessage())
                 .photo(photo)
                 .room(roomRepo.findById(dto.getRoomId()).orElseThrow())
-                .member(memberRepo.findById(dto.getMemberId()).orElseThrow())
+                .user(user) // ← 추가
+                .member(member)
                 .date(LocalDate.now())
                 .isHaemyeong(dto.getIsHaemyeong())
                 .build();
+
 
         return habitPostRepo.save(post).getId();
     }
@@ -59,14 +68,14 @@ public class HabitPostService {
         return result;
     }
 
-    public PostResultOneDto readOneInRoom(Long memberId, Long postId) {
+    public PostResultOneDto readOneInRoom(Long userId, Long postId) {
         HabitPost post = habitPostRepo.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다."));
-        return convertOneIntoDto(post, memberId);
+        return convertOneIntoDto(post, userId);
     }
 
     private PostResultListDto convertListIntoDto(HabitPost post) {
-        String userName = post.getMember().getUser().getUserName();
+        String userName = post.getUser().getUserName();
 
         String path = null;
         if (post.getPhoto() != null) {
@@ -83,7 +92,7 @@ public class HabitPostService {
     }
 
     private PostResultOneDto convertOneIntoDto(HabitPost post, Long viewingUserId) {
-        String userName = post.getMember().getUser().getUserName();
+        String userName = post.getUser().getUserName();
 
         String path = null;
         if (post.getPhoto() != null) {
