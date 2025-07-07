@@ -13,6 +13,7 @@ import com.pard.weact.habitPost.repo.HabitPostRepo;
 import com.pard.weact.liked.service.LikedService;
 import com.pard.weact.memberInformation.entity.MemberInformation;
 import com.pard.weact.memberInformation.repository.MemberInformationRepo;
+import com.pard.weact.memberInformation.service.MemberInformationService;
 import com.pard.weact.postPhoto.entity.PostPhoto;
 import com.pard.weact.postPhoto.service.PostPhotoService;
 import com.pard.weact.room.entity.Room;
@@ -39,6 +40,7 @@ public class HabitPostService {
     private final CommentRepo commentRepo;
     private final MemberInformationRepo memberRepo;
     private final RoomService roomService;
+    private final MemberInformationService memberInformationService;
 
     public Long createHabitPost(CreateHabitPostDto dto, MultipartFile image) throws IOException {
         PostPhoto photo = postPhotoService.uploadAndSave(image);
@@ -64,7 +66,7 @@ public class HabitPostService {
                 .build();
 
         if(!post.isHaemyeong()){
-            member.plusHabitCount();
+            memberInformationService.plusHabitCount(user.getId(), room.getId());
         }
         member.updateDoNothing();
         roomService.checkOneDayCount(room.getId());

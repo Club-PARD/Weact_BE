@@ -1,6 +1,7 @@
 package com.pard.weact.User.controller;
 
 import com.pard.weact.User.dto.req.CreateUserDto;
+import com.pard.weact.User.dto.req.LoginDto;
 import com.pard.weact.User.dto.res.*;
 import com.pard.weact.User.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,11 @@ public class UserController {
     public ResponseEntity<List<ReadAllUserDto>> readAll() {
         List<ReadAllUserDto> users = userService.readAll();
         return ResponseEntity.ok(users);
+    }
+
+    @GetMapping("/login")
+    public Long login(@RequestBody LoginDto loginDto){
+        return userService.login(loginDto);
     }
 
     // 홈화면

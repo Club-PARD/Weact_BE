@@ -5,6 +5,8 @@ import com.pard.weact.User.repo.UserRepo;
 import com.pard.weact.UserInvite.dto.req.UserInviteUpdateDto;
 import com.pard.weact.UserInvite.entity.UserInvite;
 import com.pard.weact.UserInvite.repository.UserInviteRepo;
+import com.pard.weact.inAppNotification.entity.NotificationType;
+import com.pard.weact.inAppNotification.service.InAppNotificationService;
 import com.pard.weact.memberInformation.service.MemberInformationService;
 import com.pard.weact.room.entity.Room;
 import com.pard.weact.room.repository.RoomRepo;
@@ -20,8 +22,9 @@ public class UserInviteService {
     private final MemberInformationService memberInformationService;
     private final UserRepo userRepo;
     private final RoomRepo roomRepo;
+    private final InAppNotificationService inAppNotificationService;
 
-    public List<Long> createUserInvites(List<Long> invitedIds, Room room, String creatorName){
+    public void createUserInvites(List<Long> invitedIds, Room room, String creatorName){
         // 초대받은 사람들 id로 users 찾기
         List<User> users = userRepo.findAllById(invitedIds);
 
@@ -35,11 +38,12 @@ public class UserInviteService {
                         .build())
                 .toList();
 
-        userInviteRepo.saveAll(userInvites);
+        for(User user : users){
+            // 초대 받는 사람 전부 target 만들어야 됨.
+            inAppNotificationService.createNotification(NotificationType.INVITE, user.getUserName(), room.getRoomName(), user.getId());
+        }
 
-        return userInvites.stream().map(
-                UserInvite::getId
-        ).toList();
+        userInviteRepo.saveAll(userInvites);
     }
 
     public void responseUpdate(UserInviteUpdateDto userInviteUpdateDto){

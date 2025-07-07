@@ -4,6 +4,8 @@ import com.pard.weact.User.dto.res.NameAndPhotoDto;
 import com.pard.weact.User.entity.User;
 import com.pard.weact.User.repo.UserRepo;
 import com.pard.weact.UserInvite.service.UserInviteService;
+import com.pard.weact.inAppNotification.entity.NotificationType;
+import com.pard.weact.inAppNotification.service.InAppNotificationService;
 import com.pard.weact.memberInformation.dto.res.MemberInfosDto;
 import com.pard.weact.memberInformation.entity.MemberInformation;
 import com.pard.weact.memberInformation.repository.MemberInformationRepo;
@@ -38,6 +40,7 @@ public class RoomService {
     private final UserRepo userRepo;
     private final MemberInformationService memberInformationService;
     private final MemberInformationRepo memberInformationRepo;
+    private final InAppNotificationService inAppNotificationService;
 
     public CheckPointDto getCheckPoint(Long roomId){ // 중간점검 랭킹 (1, 2등 리스트, 이름만, 공동가능)
         List<MemberInformation> firstRankMembers =  memberInformationRepo.findTopMembersByRoomId(roomId);
@@ -144,7 +147,7 @@ public class RoomService {
         memberInformationService.createMemberInformation(creator, room);
 
         // 나머지 인원에 대해서는 초대장 만들기 (초대받은 사람들 id, 만든 사람 이름, room)
-        List<Long> userInviteIds = userInviteService.createUserInvites(createRoomDto.getInvitedIds(), room ,creatorName);
+        userInviteService.createUserInvites(createRoomDto.getInvitedIds(), room ,creatorName);
 
         // 위에서 만든 초대장 보내기
         return AfterCreateRoomDto.builder()
@@ -152,7 +155,6 @@ public class RoomService {
                 .roomName(room.getRoomName())
                 .dayCountByWeek(room.getDayCountByWeek())
                 .creatorName(creatorName)
-                .userInviteIds(userInviteIds)
                 .checkPoints(createRoomDto.checkPoints())
                 .build();
     }
@@ -175,18 +177,36 @@ public class RoomService {
             }
 
             if (activeDays.contains(yesterdayDay)) {
-                List<MemberInformation> memberInfos = memberInformationRepo.findByRoomId(room.getId());
+                doWorstCase(room);
+            }
+        }
+    }
 
-                for(MemberInformation memberInformation : memberInfos){ // 멤버가 아무것도 안했을 때 조치.
-                    if(memberInformation.isDoNothing()){
-                        memberInformation.plusWorstCount();
-                        if(memberInformation.checkCoin(room.getCoin())){
-                            memberInformationRepo.delete(memberInformation);
-                            room.minusMemberCount();
-                        }
-                    }
+    public void doWorstCase(Room room){
+        List<MemberInformation> memberInfos = memberInformationRepo.findByRoomId(room.getId());
+
+        for(MemberInformation memberInformation : memberInfos){ // 멤버가 아무것도 안했을 때 조치.
+            if(memberInformation.isDoNothing()){
+                memberInformation.plusWorstCount(); // count 올리고
+                notifyWorstCase(memberInformation.getUser(), room); // 나머지 인원들한테 알림.
+
+                if(memberInformation.checkCoin(room.getCoin())){ // 코인횟수 체크
+                    memberInformationRepo.delete(memberInformation);
+                    room.minusMemberCount();
                 }
             }
+        }
+    }
+
+    public void notifyWorstCase(User user, Room room){
+        // 무단결석한 user 제외하고 모두 구해서 알림전송.
+        List<MemberInformation> memberInformations = memberInformationRepo.findAllByRoomIdAndUserIdNot(room.getId(), user.getId());
+
+        for(MemberInformation memberInformation : memberInformations){
+            inAppNotificationService.createNotification(NotificationType.WORST_CASE,
+                    memberInformation.getUser().getUserName(),
+                    memberInformation.getRoom().getRoomName(),
+                    memberInformation.getUser().getId());
         }
     }
 
