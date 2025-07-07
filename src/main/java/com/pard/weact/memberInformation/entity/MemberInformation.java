@@ -55,13 +55,10 @@ public class MemberInformation {
     }
 
     public boolean checkCoin(int coin){
-        if(this.worstCount == coin){
-            return true;
-        }else
-            return false;
+        return this.worstCount == coin;
     }
 
     public void updateDoNothing(){
-        this.isDoNothing = false;
+        this.isDoNothing = true;
     }
 }
