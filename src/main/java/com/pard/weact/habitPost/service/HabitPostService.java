@@ -15,7 +15,9 @@ import com.pard.weact.memberInformation.entity.MemberInformation;
 import com.pard.weact.memberInformation.repository.MemberInformationRepo;
 import com.pard.weact.postPhoto.entity.PostPhoto;
 import com.pard.weact.postPhoto.service.PostPhotoService;
+import com.pard.weact.room.entity.Room;
 import com.pard.weact.room.repository.RoomRepo;
+import com.pard.weact.room.service.RoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -36,6 +38,7 @@ public class HabitPostService {
     private final LikedService likedService;
     private final CommentRepo commentRepo;
     private final MemberInformationRepo memberRepo;
+    private final RoomService roomService;
 
     public Long createHabitPost(CreateHabitPostDto dto, MultipartFile image) throws IOException {
         PostPhoto photo = postPhotoService.uploadAndSave(image);
@@ -47,17 +50,24 @@ public class HabitPostService {
 
         User user = userRepo.findById(dto.getUserId()).orElseThrow();
         MemberInformation member = memberRepo.findByUserIdAndRoomId(dto.getUserId(), dto.getRoomId());
+        Room room = roomRepo.findById(dto.getRoomId()).orElseThrow();
 
 
         HabitPost post = HabitPost.builder()
                 .message(dto.getMessage())
                 .photo(photo)
-                .room(roomRepo.findById(dto.getRoomId()).orElseThrow())
+                .room(room)
                 .user(user) // ← 추가
                 .member(member)
                 .date(LocalDate.now())
                 .isHaemyeong(dto.getIsHaemyeong())
                 .build();
+
+        if(!post.isHaemyeong()){
+            member.plusHabitCount();
+        }
+        member.updateDoNothing();
+        roomService.checkOneDayCount(room.getId());
 
 
         return habitPostRepo.save(post).getId();

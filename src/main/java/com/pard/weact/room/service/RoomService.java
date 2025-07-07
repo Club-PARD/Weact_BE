@@ -106,6 +106,8 @@ public class RoomService {
     public boolean checkOneDayCount(Long roomId){
         Room room = roomRepo.findById(roomId).orElseThrow();
 
+        room.checkDateAndPlusOneDayCount();
+
         return room.getOneDayCount() == room.getMemberCount();
     }
 

@@ -59,6 +59,6 @@ public class MemberInformation {
     }
 
     public void updateDoNothing(){
-        this.isDoNothing = true;
+        this.isDoNothing = false;
     }
 }
