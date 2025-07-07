@@ -69,7 +69,6 @@ public class HabitPostService {
         member.updateDoNothing();
         roomService.checkOneDayCount(room.getId());
 
-
         return habitPostRepo.save(post).getId();
     } // 해명하고 나뉘는 건 부차적인 문제
 

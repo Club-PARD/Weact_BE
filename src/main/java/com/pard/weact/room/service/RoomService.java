@@ -15,6 +15,7 @@ import com.pard.weact.room.dto.res.FinalRankingDto;
 import com.pard.weact.room.entity.Room;
 import com.pard.weact.room.repository.RoomRepo;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cglib.core.Local;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -109,6 +110,15 @@ public class RoomService {
         room.checkDateAndPlusOneDayCount();
 
         return room.getOneDayCount() == room.getMemberCount();
+    }
+
+    public boolean checkDays(Long roomId){
+        Room room = roomRepo.findById(roomId).orElseThrow();
+
+        DayOfWeek today = LocalDate.now().getDayOfWeek();
+        List<DayOfWeek> activeDays = room.parseDays();
+
+        return activeDays.contains(today);
     }
 
     public AfterCreateRoomDto createRoom(CreateRoomDto createRoomDto){
