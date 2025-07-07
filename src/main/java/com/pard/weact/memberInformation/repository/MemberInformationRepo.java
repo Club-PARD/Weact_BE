@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface MemberInformationRepo extends JpaRepository<MemberInformation, Long> {
     public MemberInformation findByUserIdAndRoomId(Long userId, Long roomId);
@@ -55,4 +56,8 @@ public interface MemberInformationRepo extends JpaRepository<MemberInformation, 
     List<MemberInformation> findThirdPlaceMembersByRoomId(@Param("roomId") Long roomId);
 
     List<MemberInformation> findByRoomIdOrderByPercentDesc(Long roomId);
+
+    List<MemberInformation> findByRoomId(Long roomId);
+
+    List<MemberInformation> findByUserId(Long userId);
 }

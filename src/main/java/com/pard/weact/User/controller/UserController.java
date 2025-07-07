@@ -1,11 +1,9 @@
 package com.pard.weact.User.controller;
 
 import com.pard.weact.User.dto.req.CreateUserDto;
-import com.pard.weact.User.dto.res.AddUserDto;
-import com.pard.weact.User.dto.res.AfterCreateUserDto;
-import com.pard.weact.User.dto.res.ReadAllUserDto;
-import com.pard.weact.User.dto.res.SearchUserDto;
+import com.pard.weact.User.dto.res.*;
 import com.pard.weact.User.service.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,14 +11,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/user")
 public class UserController {
-
     private final UserService userService;
-
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
 
     // 회원가입
     @PostMapping("/")
@@ -34,6 +28,12 @@ public class UserController {
     public ResponseEntity<List<ReadAllUserDto>> readAll() {
         List<ReadAllUserDto> users = userService.readAll();
         return ResponseEntity.ok(users);
+    }
+
+    // 홈화면
+    @GetMapping("/home/{userId}")
+    public HomeScreenDto getHomeScreen(@PathVariable Long userId){
+        return userService.getHomeScreen(userId);
     }
 
     // userId로 검색

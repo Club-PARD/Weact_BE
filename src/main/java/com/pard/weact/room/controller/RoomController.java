@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 public class RoomController {
     private final RoomService roomService;
 
-
     @GetMapping("/checkPoint/{roomId}")
     public CheckPointDto getCheckPoint(@PathVariable Long roomId){
         return roomService.getCheckPoint(roomId);
@@ -25,6 +24,11 @@ public class RoomController {
     @GetMapping("/finalRanking{roomId}")
     public FinalRankingDto getFinalRanking(@PathVariable Long roomId){
         return roomService.getFinalRanking(roomId);
+    }
+
+    @GetMapping("/oneDayCount")
+    public boolean checkOneDayCount(Long roomId){
+        return roomService.checkOneDayCount(roomId);
     }
 
     @PostMapping("")

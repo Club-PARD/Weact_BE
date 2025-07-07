@@ -29,10 +29,4 @@ public class MemberInformationController {
         memberInformationService.plusHabitCount(userId, roomId);
     }
 
-    @PatchMapping("/coinTest/{userId}/{roomId}")
-    @Transactional
-    public String coinTest(@PathVariable Long userId, @PathVariable Long roomId){
-        return memberInformationService.plusWorstCount(userId, roomId);
-    }
-
 }

@@ -49,19 +49,6 @@ public class MemberInformationService {
         memberInformationRepo.save(memberInformation);
     }
 
-    public String plusWorstCount(Long userId, Long rooId){
-        MemberInformation memberInformation = memberInformationRepo.findByUserIdAndRoomId(userId, rooId);
-        memberInformation.plusWorstCount();
-
-        Room room = roomRepo.findById(rooId).orElseThrow();
-        if(memberInformation.checkCoin(room.getCoin())){
-            memberInformationRepo.delete(memberInformation);
-            return "deleted";
-        }else{
-            return "not yet";
-        }
-    }
-
     public HamburgerInfoDto showHamburgerBar(Long userId, Long roomId){
         User user = userRepo.findById(userId).orElseThrow();
         MemberInformation memberMe = memberInformationRepo.findByUserIdAndRoomId(userId, roomId);

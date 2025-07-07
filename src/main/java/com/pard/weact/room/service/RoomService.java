@@ -15,9 +15,14 @@ import com.pard.weact.room.dto.res.FinalRankingDto;
 import com.pard.weact.room.entity.Room;
 import com.pard.weact.room.repository.RoomRepo;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -98,6 +103,12 @@ public class RoomService {
     }
 
 
+    public boolean checkOneDayCount(Long roomId){
+        Room room = roomRepo.findById(roomId).orElseThrow();
+
+        return room.getOneDayCount() == room.getMemberCount();
+    }
+
     public AfterCreateRoomDto createRoom(CreateRoomDto createRoomDto){
         int dayCount =  createRoomDto.dayCount();
 
@@ -106,6 +117,7 @@ public class RoomService {
                 .reward(createRoomDto.getReward())
                 .startDate(createRoomDto.getStartDate())
                 .endDate(createRoomDto.getEndDate())
+                .days(createRoomDto.getDays())
                 .dayCountByWeek(createRoomDto.getDayCountByWeek())
                 .dayCount(dayCount)
                 .coin(createRoomDto.coinCount(dayCount))
@@ -131,5 +143,42 @@ public class RoomService {
                 .userInviteIds(userInviteIds)
                 .checkPoints(createRoomDto.checkPoints())
                 .build();
+    }
+
+    @Scheduled(cron = "0 0 0 * * *") // 매일 자정 실행
+    public void checkByDayOfWeek() {
+        LocalDate yesterday = LocalDate.now().minusDays(1);
+        DayOfWeek yesterdayDay = yesterday.getDayOfWeek();
+
+        List<Room> rooms = roomRepo.findAll(); // 모든 Room 순회
+
+        for (Room room : rooms) {
+            List<DayOfWeek> activeDays = room.parseDays();
+
+            LocalDate start = toLocalDate(room.getStartDate());
+            LocalDate end = toLocalDate(room.getEndDate());
+
+            if (yesterday.isBefore(start) || yesterday.isAfter(end)) {
+                continue; // 어제가 활동 기간 밖이면 스킵
+            }
+
+            if (activeDays.contains(yesterdayDay)) {
+                List<MemberInformation> memberInfos = memberInformationRepo.findByRoomId(room.getId());
+
+                for(MemberInformation memberInformation : memberInfos){ // 멤버가 아무것도 안했을 때 조치.
+                    if(memberInformation.isDoNothing()){
+                        memberInformation.plusWorstCount();
+                        if(memberInformation.checkCoin(room.getCoin())){
+                            memberInformationRepo.delete(memberInformation);
+                            room.minusMemberCount();
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public LocalDate toLocalDate(Date date) {
+        return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
     }
 }
