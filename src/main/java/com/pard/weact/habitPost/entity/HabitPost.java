@@ -1,8 +1,12 @@
 package com.pard.weact.habitPost.entity;
 
+import com.pard.weact.User.entity.User;
+import com.pard.weact.comment.entity.Comment;
 import com.pard.weact.liked.entity.Liked;
+import com.pard.weact.memberInformation.entity.MemberInformation;
 import com.pard.weact.postPhoto.entity.PostPhoto;
 
+import com.pard.weact.room.entity.Room;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -20,20 +24,31 @@ public class HabitPost {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String message;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "room_id")
+    private Room room;
 
-    private Boolean isHaemyeong;
+    // ✅ 직접적으로 user 연결
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 
-    private LocalDate date;
+    // ✅ 여전히 통계 용도로 사용
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_information_id")
+    private MemberInformation member;
 
-    private String userId;
-
-    private Long roomId;
-
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "post_photo_id")
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "photo_id")
     private PostPhoto photo;
 
     @OneToMany(mappedBy = "habitPost", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Liked> likes = new ArrayList<>();
+    private List<Comment> comments = new ArrayList<>();
+
+    private LocalDate date;
+    private String message;
+    private boolean isHaemyeong;
+
+    @OneToMany(mappedBy = "habitPost", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Liked> likedList = new ArrayList<>();
 }

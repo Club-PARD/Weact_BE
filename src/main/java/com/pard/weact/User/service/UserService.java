@@ -65,6 +65,7 @@ public class UserService {
                         .roomName(room.getRoomName())
                         .dayCountByWeek(room.getDayCountByWeek())
                         .period(room.getPeriodFormatted())
+                        .habit(memberInformationRepo.findByUserIdAndRoomId(userId, room.getId()).getHabit())
                         .percent(memberInformationRepo.findByUserIdAndRoomId(userId, room.getId()).getPercent())
                         .build())
                 .toList();

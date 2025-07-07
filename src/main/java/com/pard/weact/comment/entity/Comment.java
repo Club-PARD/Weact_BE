@@ -1,4 +1,4 @@
-package com.pard.weact.liked.entity;
+package com.pard.weact.comment.entity;
 
 import com.pard.weact.User.entity.User;
 import com.pard.weact.habitPost.entity.HabitPost;
@@ -9,16 +9,20 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Liked {
+public class Comment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "habit_post_id")
@@ -28,15 +32,5 @@ public class Liked {
     @JoinColumn(name = "user_id")
     private User user;
 
-    private boolean liked;
-
-    public void like() {
-        this.liked = true;
-    }
-
-    public void unlike() {
-        this.liked = false;
-    }
+    private LocalDateTime createdAt;
 }
-
-

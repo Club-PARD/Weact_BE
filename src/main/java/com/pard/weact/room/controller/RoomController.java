@@ -31,6 +31,11 @@ public class RoomController {
         return roomService.checkOneDayCount(roomId);
     }
 
+    @GetMapping("/checkDays/{roomId}") // 오늘 인증하는 요일 맞는지
+    public boolean checkDays(@PathVariable Long roomId){
+        return roomService.checkDays(roomId);
+    }
+
     @PostMapping("")
     public AfterCreateRoomDto createRoom(@RequestBody CreateRoomDto createRoomDto){
         return roomService.createRoom(createRoomDto);
