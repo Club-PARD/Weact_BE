@@ -15,5 +15,5 @@ public class UpdateHabitAndRemindTimeDto {
     private String habit;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
-    private LocalTime remindTime;
+    private String remindTime;
 }

@@ -12,6 +12,8 @@ import com.pard.weact.room.repository.RoomRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -34,7 +36,23 @@ public class MemberInformationService {
 
     public void updateHabitAndRemindTime(UpdateHabitAndRemindTimeDto updateHabitAndRemindTimeDto){
         MemberInformation memberInformation = memberInformationRepo.findByUserIdAndRoomId(updateHabitAndRemindTimeDto.getUserId(), updateHabitAndRemindTimeDto.getRoomId());
-        memberInformation.update(updateHabitAndRemindTimeDto.getHabit(), updateHabitAndRemindTimeDto.getRemindTime());
+        String[] parts = updateHabitAndRemindTimeDto.getRemindTime().trim().split(" ");
+
+        String ampm = parts[0];     // "오전" or "오후"
+        String timePart = parts[1]; // "06:00"
+
+        // "06:00" -> LocalTime
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+        LocalTime time = LocalTime.parse(timePart, formatter);
+
+        if ("오후".equals(ampm) && time.getHour() < 12) {
+            time = time.plusHours(12);
+        } else if ("오전".equals(ampm) && time.getHour() == 12) {
+            // 오전 12시는 자정 → 00시로 바꿔야 함
+            time = time.minusHours(12);
+        }
+
+        memberInformation.update(updateHabitAndRemindTimeDto.getHabit(), time);
 
         memberInformationRepo.save(memberInformation);
     }
