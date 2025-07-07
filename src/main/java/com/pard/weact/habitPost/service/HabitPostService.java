@@ -114,27 +114,23 @@ public class HabitPostService {
             liked = likedService.isLiked(post.getId(), viewingMember.getId());
         }
 
-        List<Comment> commentList = commentRepo.findByHabitPostIdOrderByCreatedAtAsc(post.getId());
-
-        List<CommentDto> commentDtos = commentList.stream()
+        List<CommentDto> commentDtos = post.getComments().stream()
                 .map(c -> new CommentDto(
-                        c.getId(),
                         c.getContent(),
-                        c.getWriter().getUser().getUserName(),
+                        c.getUser().getUserName(),
                         c.getCreatedAt()
                 ))
                 .toList();
 
-        //3. builder에 .comments(commentDtos) 추가
         return PostResultOneDto.builder()
                 .userName(userName)
                 .message(post.getMessage())
                 .imageUrl(path)
                 .likeCount(likeCount)
                 .liked(liked)
-                .comments(commentDtos) // ← 이 줄만 추가하면 끝!
+                .comments(commentDtos)
                 .build();
-
     }
+
 
 }

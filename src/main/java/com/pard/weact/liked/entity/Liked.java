@@ -1,5 +1,6 @@
 package com.pard.weact.liked.entity;
 
+import com.pard.weact.User.entity.User;
 import com.pard.weact.habitPost.entity.HabitPost;
 import com.pard.weact.memberInformation.entity.MemberInformation;
 import jakarta.persistence.*;
@@ -24,8 +25,8 @@ public class Liked {
     private HabitPost habitPost;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
-    private MemberInformation member;
+    @JoinColumn(name = "user_id")
+    private User user;
 
     private boolean liked;
 

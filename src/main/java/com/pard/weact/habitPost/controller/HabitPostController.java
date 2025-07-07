@@ -34,13 +34,23 @@ import java.util.List;
 public class HabitPostController {
 
     private final HabitPostService habitPostService;
+    private final ObjectMapper objectMapper;
 
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/habit-post", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(summary = "습관 인증 업로드")
     public ResponseEntity<Long> createHabitPost(
-            @RequestPart("request") CreateHabitPostDto dto,
-            @RequestPart("image") MultipartFile image) throws Exception {
+            @Parameter(
+                    description = "습관 인증 요청 JSON (아래 예시처럼 입력)",
+                    example = "{\"userId\": 2, \"roomId\": 1, \"message\": \"오늘도 성공!\", \"isHaemyeong\": true}"
+            )
+            @RequestPart("request") String requestJson,
 
-        Long postId = habitPostService.createHabitPost(dto, image);
+            @Parameter(description = "이미지 파일")
+            @RequestPart("image") MultipartFile image
+    ) throws IOException {
+        CreateHabitPostDto request = objectMapper.readValue(requestJson, CreateHabitPostDto.class);
+
+        Long postId = habitPostService.createHabitPost(request, image);
         return ResponseEntity.ok(postId);
     }
 

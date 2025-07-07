@@ -1,5 +1,6 @@
 package com.pard.weact.comment.entity;
 
+import com.pard.weact.User.entity.User;
 import com.pard.weact.habitPost.entity.HabitPost;
 import com.pard.weact.memberInformation.entity.MemberInformation;
 import jakarta.persistence.*;
@@ -28,8 +29,8 @@ public class Comment {
     private HabitPost habitPost;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
-    private MemberInformation writer;
+    @JoinColumn(name = "user_id")
+    private User user;
 
     private LocalDateTime createdAt;
 }

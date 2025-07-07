@@ -1,15 +1,15 @@
 package com.pard.weact.liked.service;
 
+
 import com.pard.weact.User.repo.UserRepo;
 import com.pard.weact.habitPost.repo.HabitPostRepo;
+import com.pard.weact.liked.dto.res.LikeToggleDto;
 import com.pard.weact.liked.entity.Liked;
 import com.pard.weact.liked.repo.LikedRepo;
-import com.pard.weact.memberInformation.entity.MemberInformation;
-import com.pard.weact.memberInformation.repository.MemberInformationRepo;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -17,34 +17,36 @@ public class LikedService {
 
     private final LikedRepo likedRepo;
     private final HabitPostRepo habitPostRepo;
-    private final MemberInformationRepo memberInformationRepo;
+    private final UserRepo userRepo;
 
-    public void like(Long habitPostId, Long memberId) {
-        Liked liked = likedRepo.findByHabitPostIdAndMemberId(habitPostId, memberId)
+    public LikeToggleDto toggleLike(Long habitPostId, Long userId) {
+        Liked liked = likedRepo.findByHabitPostIdAndUserId(habitPostId, userId)
                 .orElseGet(() -> Liked.builder()
                         .habitPost(habitPostRepo.findById(habitPostId).orElseThrow())
-                        .member(memberInformationRepo.findById(memberId).orElseThrow())
+                        .user(userRepo.findById(userId).orElseThrow())
+                        .liked(false)
                         .build());
-        liked.like();
+
+        if (liked.isLiked()) {
+            liked.unlike();
+        } else {
+            liked.like();
+        }
         likedRepo.save(liked);
+
+        long likeCount = likedRepo.countByHabitPostIdAndLikedIsTrue(habitPostId);
+        return new LikeToggleDto(liked.isLiked(), likeCount);
     }
 
-    public void unlike(Long habitPostId, Long memberId) {
-        Optional<Liked> likedOpt = likedRepo.findByHabitPostIdAndMemberId(habitPostId, memberId);
-        likedOpt.ifPresent(liked -> {
-            liked.unlike();
-            likedRepo.save(liked);
-        });
-    }
-    public boolean isLiked(Long postId, Long memberId) {
-        return likedRepo.findByHabitPostIdAndMemberId(postId, memberId)
+    public boolean isLiked(Long postId, Long userId) {
+        return likedRepo.findByHabitPostIdAndUserId(postId, userId)
                 .map(Liked::isLiked)
                 .orElse(false);
     }
+
     public Long countLikes(Long postId) {
         return likedRepo.countByHabitPostIdAndLikedIsTrue(postId);
     }
-
 
 }
 

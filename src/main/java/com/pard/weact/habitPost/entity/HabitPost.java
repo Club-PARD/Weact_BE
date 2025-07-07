@@ -43,7 +43,7 @@ public class HabitPost {
     private PostPhoto photo;
 
     @OneToMany(mappedBy = "habitPost", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Comment> commentList = new ArrayList<>();
+    private List<Comment> comments = new ArrayList<>();
 
     private LocalDate date;
     private String message;
