@@ -40,17 +40,23 @@ public class HabitPostController {
     @Operation(summary = "습관 인증 업로드")
     public ResponseEntity<Long> createHabitPost(
             @Parameter(
-                    description = "습관 인증 요청 JSON (아래 예시처럼 입력)",
-                    example = "{\"userId\": 2, \"roomId\": 1, \"message\": \"오늘도 성공!\", \"isHaemyeong\": true}"
+                    description = "습관 인증 요청 JSON (예시처럼 입력: {\"userId\": 2, \"roomId\": 1, \"message\": \"오늘도 성공!\", \"isHaemyeong\": true})"
             )
             @RequestPart("request") String requestJson,
 
             @Parameter(description = "이미지 파일")
-            @RequestPart("image") MultipartFile image
+            @RequestPart(value="image",required = false) MultipartFile image
     ) throws IOException {
         CreateHabitPostDto request = objectMapper.readValue(requestJson, CreateHabitPostDto.class);
 
-        Long postId = habitPostService.createHabitPost(request, image);
+        Long postId;
+
+        if (image == null || image.isEmpty()) {
+            postId = habitPostService.createHabitPostWithoutPhoto(request);
+        } else {
+            postId = habitPostService.createHabitPost(request, image);
+        }
+
         return ResponseEntity.ok(postId);
     }
 

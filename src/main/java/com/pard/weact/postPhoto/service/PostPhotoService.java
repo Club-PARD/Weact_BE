@@ -54,4 +54,11 @@ public class PostPhotoService {
             throw new RuntimeException("이미지를 읽는 데 실패했습니다.", e);
         }
     }
+    public PostPhoto getDefaultHaemyeongPhoto() {
+        // 방법 1: DB에서 고정 ID로 조회
+        return postPhotoRepo.findById(1L) // 나중에 이거 고쳐야 해!! 해명 이미지로
+                .orElseThrow(() -> new IllegalArgumentException("기본 해명 이미지가 존재하지 않습니다."));
+
+    }
+
 }

@@ -63,6 +63,28 @@ public class HabitPostService {
         return habitPostRepo.save(post).getId();
     } // 해명하고 나뉘는 건 부차적인 문제
 
+    public Long createHabitPostWithoutPhoto(CreateHabitPostDto dto) {
+        if (dto.getUserId() == null || dto.getRoomId() == null) {
+            throw new IllegalArgumentException("UserId 또는 RoomId가 null입니다.");
+        }
+
+        User user = userRepo.findById(dto.getUserId()).orElseThrow();
+        MemberInformation member = memberRepo.findByUserIdAndRoomId(dto.getUserId(), dto.getRoomId());
+
+        PostPhoto defaultPhoto = postPhotoService.getDefaultHaemyeongPhoto();
+
+        HabitPost post = HabitPost.builder()
+                .message(dto.getMessage())
+                .photo(defaultPhoto) // 이미지 없이 저장
+                .room(roomRepo.findById(dto.getRoomId()).orElseThrow())
+                .user(user)
+                .member(member)
+                .date(LocalDate.now())
+                .isHaemyeong(dto.getIsHaemyeong())
+                .build();
+
+        return habitPostRepo.save(post).getId();
+    }
     public List<PostResultListDto> readAllInRoom(Long roomId, LocalDate date) {
         List<HabitPost> posts = habitPostRepo.findAllByRoomIdAndDate(roomId, date);
         List<PostResultListDto> result = new ArrayList<>();
