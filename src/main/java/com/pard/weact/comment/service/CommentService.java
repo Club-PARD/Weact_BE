@@ -23,11 +23,11 @@ public class CommentService {
     private final HabitPostRepo habitPostRepo;
     private final UserRepo userRepo;
 
-    public CommentDto addComment(CreateCommentDto dto) {
+    public CommentDto addComment(Long userId, CreateCommentDto dto) {
         HabitPost post = habitPostRepo.findById(dto.getPostId())
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다."));
 
-        User writer = userRepo.findById(dto.getUserId())
+        User writer = userRepo.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 유저가 존재하지 않습니다."));
 
         Comment comment = Comment.builder()

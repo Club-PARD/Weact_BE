@@ -5,6 +5,7 @@ import com.pard.weact.room.dto.res.AfterCreateRoomDto;
 import com.pard.weact.room.dto.res.CheckPointDto;
 import com.pard.weact.room.dto.res.FinalRankingDto;
 import com.pard.weact.room.service.RoomService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
