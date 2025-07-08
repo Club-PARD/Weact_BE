@@ -24,6 +24,11 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(afterCreateUserDto);
     }
 
+    @GetMapping("/checkDuplicated/{userId}")
+    public boolean checkDuplicated(@PathVariable String userId){
+        return userService.checkDuplicated(userId);
+    }
+
     // 모든 리스트 보기
     @GetMapping("/")
     public ResponseEntity<List<ReadAllUserDto>> readAll() {

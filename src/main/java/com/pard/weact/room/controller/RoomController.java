@@ -16,14 +16,19 @@ import org.springframework.web.bind.annotation.*;
 public class RoomController {
     private final RoomService roomService;
 
+    @PostMapping("")
+    public AfterCreateRoomDto createRoom(@RequestBody CreateRoomDto createRoomDto){
+        return roomService.createRoom(createRoomDto);
+    }
+
     @GetMapping("/checkPoint/{roomId}")
     public CheckPointDto getCheckPoint(@PathVariable Long roomId){
         return roomService.getCheckPoint(roomId);
     }
 
-    @GetMapping("/finalRanking{roomId}")
-    public FinalRankingDto getFinalRanking(@PathVariable Long roomId){
-        return roomService.getFinalRanking(roomId);
+    @GetMapping("/finalRanking{roomId}/{userId}")
+    public FinalRankingDto getFinalRanking(@PathVariable Long roomId, @PathVariable Long userId){
+        return roomService.getFinalRanking(roomId, userId);
     }
 
     @GetMapping("/oneDayCount")
@@ -36,8 +41,9 @@ public class RoomController {
         return roomService.checkDays(roomId);
     }
 
-    @PostMapping("")
-    public AfterCreateRoomDto createRoom(@RequestBody CreateRoomDto createRoomDto){
-        return roomService.createRoom(createRoomDto);
+    @GetMapping("/checkThreeDay{roomId}")
+    public boolean checkThreedays(@PathVariable Long roomId){
+        return roomService.checkThreeDays(roomId);
     }
+
 }

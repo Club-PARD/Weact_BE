@@ -64,11 +64,15 @@ public class RoomService {
                 .build();
     }
 
-    public FinalRankingDto getFinalRanking(Long roomId){ // / 최종랭킹 (3등까지 전체리스트, 공동가능, 습관, 달성율)
+    public FinalRankingDto getFinalRanking(Long roomId, Long userId){ // / 최종랭킹 (3등까지 전체리스트, 공동가능, 습관, 달성율)
         List<MemberInformation> firstRankMembers = memberInformationRepo.findTopMembersByRoomId(roomId);
         List<MemberInformation> secondRankMembers = memberInformationRepo.findSecondPlaceMembersByRoomId(roomId);
         List<MemberInformation> thirdRankMembers = memberInformationRepo.findThirdPlaceMembersByRoomId(roomId);
         List<MemberInformation> allMembers = memberInformationRepo.findByRoomIdOrderByPercentDesc(roomId);
+        User user = userRepo.findById(userId).orElseThrow();
+
+        boolean amITop = firstRankMembers.stream()
+                .anyMatch(member -> member.getUser().getId().equals(user.getId()));
 
         Set<Long> topIds = Stream.of(firstRankMembers, secondRankMembers, thirdRankMembers)
                 .flatMap(List::stream)
@@ -93,6 +97,7 @@ public class RoomService {
                 .secondPlace(toDto(secondRankMembers))
                 .thirdPlace(toDto(thirdRankMembers))
                 .restMembers(restMembers)
+                .amITop(amITop)
                 .build();
     }
 
@@ -182,15 +187,26 @@ public class RoomService {
         }
     }
 
+    public boolean checkThreeDays(Long roomId){
+        Room room = roomRepo.findById(roomId).orElseThrow();
+
+        LocalDate today = LocalDate.now();
+
+        return toLocalDate(room.getStartDate()).plusDays(2).isAfter(today);
+    }
+
+    // 아래로 보조 메소드
     public void doWorstCase(Room room){
         List<MemberInformation> memberInfos = memberInformationRepo.findByRoomId(room.getId());
 
         for(MemberInformation memberInformation : memberInfos){ // 멤버가 아무것도 안했을 때 조치.
             if(memberInformation.isDoNothing()){
                 memberInformation.plusWorstCount(); // count 올리고
-                notifyWorstCase(memberInformation.getUser(), room); // 나머지 인원들한테 알림.
+                notifyOthers(memberInformation.getUser(), room, NotificationType.WORST_CASE);
+                // worstCase 모든 팀원에게 전달.
 
-                if(memberInformation.checkCoin(room.getCoin())){ // 코인횟수 체크
+                if(memberInformation.checkCoin(room.getCoin())){ // 코인횟수 체크, 강퇴
+                    notifyOthers(memberInformation.getUser(), room, NotificationType.OUT); // 나머지 인원들한테 알림.
                     memberInformationRepo.delete(memberInformation);
                     room.minusMemberCount();
                 }
@@ -198,12 +214,12 @@ public class RoomService {
         }
     }
 
-    public void notifyWorstCase(User user, Room room){
+    public void notifyOthers(User user, Room room, NotificationType type){
         // 무단결석한 user 제외하고 모두 구해서 알림전송.
         List<MemberInformation> memberInformations = memberInformationRepo.findAllByRoomIdAndUserIdNot(room.getId(), user.getId());
 
         for(MemberInformation memberInformation : memberInformations){
-            inAppNotificationService.createNotification(NotificationType.WORST_CASE,
+            inAppNotificationService.createNotification(type,
                     memberInformation.getUser().getUserName(),
                     memberInformation.getRoom().getRoomName(),
                     memberInformation.getUser().getId());

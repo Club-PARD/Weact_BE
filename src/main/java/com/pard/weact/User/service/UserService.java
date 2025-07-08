@@ -49,6 +49,10 @@ public class UserService {
                 .id(user.getId()).build();
     }
 
+    public boolean checkDuplicated(String userId){
+        return userRepo.existsByUserId(userId);
+    }
+
     public Long login(LoginDto loginDto){
         User user = userRepo.findByUserId(loginDto.getUserId()).orElseThrow();
 
