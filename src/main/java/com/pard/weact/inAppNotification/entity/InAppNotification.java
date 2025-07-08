@@ -15,7 +15,6 @@ public class InAppNotification {
     private Long id;
 
     private Long targetId;
-    private String senderName;
     private String roomName;
     private String message;
 

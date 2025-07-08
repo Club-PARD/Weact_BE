@@ -46,8 +46,7 @@ public class RoomController {
     }
 
     @GetMapping("/checkThreeDay{roomId}")
-    public boolean checkThreedays(@PathVariable Long roomId){
+    public boolean checkThreedays(@PathVariable Long roomId) {
         return roomService.checkThreeDays(roomId);
     }
-
 }
