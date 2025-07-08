@@ -1,9 +1,11 @@
 package com.pard.weact.inAppNotification.controller;
 
+import com.pard.weact.User.entity.User;
 import com.pard.weact.inAppNotification.dto.res.NotificationDto;
 import com.pard.weact.inAppNotification.service.InAppNotificationService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,8 +20,8 @@ import java.util.List;
 public class InAppNotificationController {
     private final InAppNotificationService inAppNotificationService;
 
-    @GetMapping("/getNotification/{userId}")
-    public List<NotificationDto> getNotification(@PathVariable Long userId){
-        return inAppNotificationService.getNotification(userId);
+    @GetMapping("/getNotification")
+    public List<NotificationDto> getNotification(@AuthenticationPrincipal User user){
+        return inAppNotificationService.getNotification(user.getId());
     }
 }

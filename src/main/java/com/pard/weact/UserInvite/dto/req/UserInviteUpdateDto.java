@@ -5,7 +5,6 @@ import lombok.*;
 @Getter @Setter @Builder
 @AllArgsConstructor @NoArgsConstructor
 public class UserInviteUpdateDto {
-    private Long userId;
     private Long roomId;
 
     private int state;

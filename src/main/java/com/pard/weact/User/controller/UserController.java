@@ -3,10 +3,12 @@ package com.pard.weact.User.controller;
 import com.pard.weact.User.dto.req.CreateUserDto;
 import com.pard.weact.User.dto.req.LoginDto;
 import com.pard.weact.User.dto.res.*;
+import com.pard.weact.User.entity.User;
 import com.pard.weact.User.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -37,9 +39,9 @@ public class UserController {
     }
 
     // 홈화면
-    @GetMapping("/home/{userId}")
-    public HomeScreenDto getHomeScreen(@PathVariable Long userId){
-        return userService.getHomeScreen(userId);
+    @GetMapping("/home")
+    public HomeScreenDto getHomeScreen(@AuthenticationPrincipal User user){
+        return userService.getHomeScreen(user.getId());
     }
 
     // userId로 검색
@@ -55,17 +57,17 @@ public class UserController {
     }
 
     // 수정
-    @PatchMapping("/{id}")
-    public ResponseEntity<String> updateById(@PathVariable Long id, @RequestBody CreateUserDto req) {
-        userService.updateById(id, req);
-        return ResponseEntity.ok("입력한 " + id + "번 내용 수정완료!");
+    @PatchMapping("")
+    public ResponseEntity<String> updateById(@AuthenticationPrincipal User user, @RequestBody CreateUserDto req) {
+        userService.updateById(user.getId(), req);
+        return ResponseEntity.ok("입력한 " + user.getId() + "번 내용 수정완료!");
     }
 
     // 삭제
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteById(@PathVariable Long id) {
-        userService.deleteById(id);
-        return ResponseEntity.ok("입력한 " + id + "번 내용 삭제완료!");
+    @DeleteMapping("")
+    public ResponseEntity<String> deleteById(@AuthenticationPrincipal User user) {
+        userService.deleteById(user.getId());
+        return ResponseEntity.ok("입력한 " + user.getId() + "번 내용 삭제완료!");
     }
 }
 

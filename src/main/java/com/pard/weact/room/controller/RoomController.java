@@ -1,5 +1,6 @@
 package com.pard.weact.room.controller;
 
+import com.pard.weact.User.entity.User;
 import com.pard.weact.room.dto.req.CreateRoomDto;
 import com.pard.weact.room.dto.res.AfterCreateRoomDto;
 import com.pard.weact.room.dto.res.CheckPointDto;
@@ -9,6 +10,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @SecurityRequirement(name = "jwtAuth")
@@ -19,8 +21,8 @@ public class RoomController {
     private final RoomService roomService;
 
     @PostMapping("")
-    public AfterCreateRoomDto createRoom(@RequestBody CreateRoomDto createRoomDto){
-        return roomService.createRoom(createRoomDto);
+    public AfterCreateRoomDto createRoom(@AuthenticationPrincipal User user, @RequestBody CreateRoomDto createRoomDto){
+        return roomService.createRoom(user.getId(), createRoomDto);
     }
 
     @GetMapping("/checkPoint/{roomId}")
@@ -28,9 +30,9 @@ public class RoomController {
         return roomService.getCheckPoint(roomId);
     }
 
-    @GetMapping("/finalRanking{roomId}/{userId}")
-    public FinalRankingDto getFinalRanking(@PathVariable Long roomId, @PathVariable Long userId){
-        return roomService.getFinalRanking(roomId, userId);
+    @GetMapping("/finalRanking{roomId}")
+    public FinalRankingDto getFinalRanking(@PathVariable Long roomId, @AuthenticationPrincipal User user){
+        return roomService.getFinalRanking(roomId, user.getId());
     }
 
     @GetMapping("/oneDayCount")

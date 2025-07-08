@@ -34,8 +34,8 @@ public class MemberInformationService {
         room.plusMemberCount();
     }
 
-    public void updateHabitAndRemindTime(UpdateHabitAndRemindTimeDto updateHabitAndRemindTimeDto){
-        MemberInformation memberInformation = memberInformationRepo.findByUserIdAndRoomId(updateHabitAndRemindTimeDto.getUserId(), updateHabitAndRemindTimeDto.getRoomId());
+    public void updateHabitAndRemindTime(Long userId, UpdateHabitAndRemindTimeDto updateHabitAndRemindTimeDto){
+        MemberInformation memberInformation = memberInformationRepo.findByUserIdAndRoomId(userId, updateHabitAndRemindTimeDto.getRoomId());
         String[] parts = updateHabitAndRemindTimeDto.getRemindTime().trim().split(" ");
 
         String ampm = parts[0];     // "오전" or "오후"

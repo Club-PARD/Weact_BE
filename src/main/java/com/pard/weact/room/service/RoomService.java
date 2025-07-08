@@ -129,7 +129,7 @@ public class RoomService {
         return activeDays.contains(today);
     }
 
-    public AfterCreateRoomDto createRoom(CreateRoomDto createRoomDto){
+    public AfterCreateRoomDto createRoom(Long userId, CreateRoomDto createRoomDto){
         int dayCount =  createRoomDto.dayCount();
 
         Room room = Room.builder()
@@ -145,7 +145,7 @@ public class RoomService {
 
         roomRepo.save(room);
 
-        User creator = userRepo.findById(createRoomDto.getCreatorId()).orElseThrow();
+        User creator = userRepo.findById(userId).orElseThrow();
         String creatorName = creator.getUserName();
 
         // 방 만들자마자 개최자는 member로 바로 넣기

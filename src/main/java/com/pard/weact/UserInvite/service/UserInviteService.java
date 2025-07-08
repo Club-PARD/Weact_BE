@@ -46,11 +46,11 @@ public class UserInviteService {
         userInviteRepo.saveAll(userInvites);
     }
 
-    public void responseUpdate(UserInviteUpdateDto userInviteUpdateDto){
-        User user = userRepo.findById(userInviteUpdateDto.getUserId()).orElseThrow();
+    public void responseUpdate(Long userId, UserInviteUpdateDto userInviteUpdateDto){
+        User user = userRepo.findById(userId).orElseThrow();
         Room room = roomRepo.findById(userInviteUpdateDto.getRoomId()).orElseThrow();
 
-        UserInvite userInvite = userInviteRepo.findByUserIdAndRoomId(userInviteUpdateDto.getUserId(), userInviteUpdateDto.getRoomId());
+        UserInvite userInvite = userInviteRepo.findByUserIdAndRoomId(userId, userInviteUpdateDto.getRoomId());
         userInvite.updateState(userInviteUpdateDto.getState());
 
         if(userInvite.getState() == 1){
