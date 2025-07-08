@@ -36,7 +36,7 @@ public class HabitPostController {
     private final HabitPostService habitPostService;
     private final ObjectMapper objectMapper;
 
-    @PostMapping(value = "/habit-post", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping( consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "습관 인증 업로드")
     public ResponseEntity<Long> createHabitPost(
             @Parameter(
