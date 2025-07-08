@@ -174,9 +174,13 @@ public class UserService {
     }
 
     public UserProfileDto getMyProfile(User user) {
+        String imageUrl = user.getProfilePhoto() != null && !user.getProfilePhoto().isBlank()
+                ? user.getProfilePhoto()
+                : defaultProfileImageUrl;
+
         return UserProfileDto.builder()
                 .userName(user.getUserName())
-                .profilePhoto(defaultProfileImageUrl)
+                .profilePhoto(imageUrl)
                 .build();
     }
 

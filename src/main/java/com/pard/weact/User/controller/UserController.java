@@ -13,24 +13,28 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import com.pard.weact.login.security.JwtUtil;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/user")
 public class UserController {
     private final UserService userService;
-
+    private final JwtUtil jwtUtil;
     // 회원가입
     @PostMapping("/")
-    public ResponseEntity<AfterCreateUserDto> createUser(@RequestBody CreateUserDto req) {
-        AfterCreateUserDto afterCreateUserDto = userService.createUser(req);
-        return ResponseEntity.status(HttpStatus.CREATED).body(afterCreateUserDto);
+    public ResponseEntity<Map<String, String>> createUser(@RequestBody CreateUserDto req) {
+        userService.createUser(req); // 더 이상 AfterCreateUserDto 안 써도 됨
+        String token = jwtUtil.generateToken(req.getUserId());
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("token", token));
     }
 
     @GetMapping("/checkDuplicated/{userId}")
-    public boolean checkDuplicated(@PathVariable String userId){
+    public boolean checkDuplicated(@PathVariable String userId) {
         return userService.checkDuplicated(userId);
     }
 
@@ -43,19 +47,19 @@ public class UserController {
 
     // 홈화면
     @GetMapping("/home")
-    public HomeScreenDto getHomeScreen(@AuthenticationPrincipal User user){
+    public HomeScreenDto getHomeScreen(@AuthenticationPrincipal User user) {
         return userService.getHomeScreen(user.getId());
     }
 
     // userId로 검색
     @GetMapping("/search/{userId}")
-    public List<SearchUserDto> searchUser(@PathVariable String userId){
+    public List<SearchUserDto> searchUser(@PathVariable String userId) {
         return userService.searchUser(userId);
     }
 
     // user 초대 목록에 추가
     @GetMapping("/search/add/{userId}")
-    public AddUserDto addUser(@PathVariable String userId){
+    public AddUserDto addUser(@PathVariable String userId) {
         return userService.addUser(userId);
     }
 
@@ -82,6 +86,7 @@ public class UserController {
         userService.uploadProfilePhoto(user.getId(), image);
         return ResponseEntity.ok().build();
     }
+
     // profile 사진 잘 들어갔는지 확인 -> 따로 구현 x
     @GetMapping("/profile")
     @Operation(summary = "현재 로그인한 유저의 프로필 정보 조회")
