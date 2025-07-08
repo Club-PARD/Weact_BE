@@ -30,7 +30,7 @@ public class RoomController {
         return roomService.getCheckPoint(roomId);
     }
 
-    @GetMapping("/finalRanking{roomId}")
+    @GetMapping("/finalRanking/{roomId}")
     public FinalRankingDto getFinalRanking(@PathVariable Long roomId, @AuthenticationPrincipal User user){
         return roomService.getFinalRanking(roomId, user.getId());
     }
@@ -45,7 +45,7 @@ public class RoomController {
         return roomService.checkDays(roomId);
     }
 
-    @GetMapping("/checkThreeDay{roomId}")
+    @GetMapping("/checkThreeDay/{roomId}")
     public boolean checkThreedays(@PathVariable Long roomId) {
         return roomService.checkThreeDays(roomId);
     }
