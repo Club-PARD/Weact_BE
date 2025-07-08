@@ -1,6 +1,7 @@
 package com.pard.weact.User.service;
 
 import com.pard.weact.User.dto.req.CreateUserDto;
+import com.pard.weact.User.dto.req.LoginDto;
 import com.pard.weact.User.dto.res.*;
 import com.pard.weact.User.entity.User;
 import com.pard.weact.User.repo.UserRepo;
@@ -48,6 +49,20 @@ public class UserService {
                 .id(user.getId()).build();
     }
 
+    public boolean checkDuplicated(String userId){
+        return userRepo.existsByUserId(userId);
+    }
+
+    public Long login(LoginDto loginDto){
+        User user = userRepo.findByUserId(loginDto.getUserId()).orElseThrow();
+
+        if(loginDto.getPassword().equals(user.getPw())){
+            return user.getId();
+        }else{
+            return null;
+        }
+    }
+
     public HomeScreenDto getHomeScreen(Long userId){
         LocalDate today = LocalDate.now();
         int month = today.getMonthValue();
@@ -65,6 +80,8 @@ public class UserService {
                         .roomName(room.getRoomName())
                         .dayCountByWeek(room.getDayCountByWeek())
                         .period(room.getPeriodFormatted())
+                        .roomId(room.getId())
+                        .memberCount(room.getMemberCount())
                         .habit(memberInformationRepo.findByUserIdAndRoomId(userId, room.getId()).getHabit())
                         .percent(memberInformationRepo.findByUserIdAndRoomId(userId, room.getId()).getPercent())
                         .build())

@@ -12,4 +12,6 @@ public class FinalRankingDto {
     private List<MemberInfosDto> secondPlace;
     private List<MemberInfosDto> thirdPlace;
     private List<MemberInfosDto> restMembers;
+
+    private boolean amITop;
 }

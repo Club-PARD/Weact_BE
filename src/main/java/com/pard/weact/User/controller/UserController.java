@@ -1,6 +1,7 @@
 package com.pard.weact.User.controller;
 
 import com.pard.weact.User.dto.req.CreateUserDto;
+import com.pard.weact.User.dto.req.LoginDto;
 import com.pard.weact.User.dto.res.*;
 import com.pard.weact.User.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -23,11 +24,21 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(afterCreateUserDto);
     }
 
+    @GetMapping("/checkDuplicated/{userId}")
+    public boolean checkDuplicated(@PathVariable String userId){
+        return userService.checkDuplicated(userId);
+    }
+
     // 모든 리스트 보기
     @GetMapping("/")
     public ResponseEntity<List<ReadAllUserDto>> readAll() {
         List<ReadAllUserDto> users = userService.readAll();
         return ResponseEntity.ok(users);
+    }
+
+    @GetMapping("/login")
+    public Long login(@RequestBody LoginDto loginDto){
+        return userService.login(loginDto);
     }
 
     // 홈화면

@@ -10,5 +10,6 @@ public class RoomInformationDto {
     private String period; // 기간
     private int dayCountByWeek; // 주 회
     private int percent; // 달성율
-
+    private int memberCount;
+    private Long roomId;
 }

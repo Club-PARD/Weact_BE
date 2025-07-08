@@ -23,10 +23,4 @@ public class MemberInformationController {
     public void updateHabitAndRemindTime(@RequestBody UpdateHabitAndRemindTimeDto updateHabitAndRemindTimeDto){
         memberInformationService.updateHabitAndRemindTime(updateHabitAndRemindTimeDto);
     }
-
-    @PatchMapping("/{userId}/{roomId}") // 인증 count 올라가는지 test 용도
-    public void updateTest(@PathVariable Long userId, @PathVariable Long roomId){
-        memberInformationService.plusHabitCount(userId, roomId);
-    }
-
 }
