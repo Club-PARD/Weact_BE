@@ -55,4 +55,10 @@ public class User {
         }
     }
 
+    public void updateProfilePhoto(String profileUrl) {
+        this.profilePhoto = profileUrl;
+    }
+    public String getProfilePhotoOrDefault(String defaultUrl) {
+        return this.profilePhoto != null ? this.profilePhoto : defaultUrl;
+    }
 }
