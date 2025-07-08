@@ -10,7 +10,6 @@ import lombok.*;
 @Builder
 
 public class CreateHabitPostDto {
-    private Long userId;
     private Long roomId;
     private String message;
     private Boolean isHaemyeong;

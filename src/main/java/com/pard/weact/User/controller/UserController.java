@@ -36,11 +36,6 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
-    @GetMapping("/login")
-    public Long login(@RequestBody LoginDto loginDto){
-        return userService.login(loginDto);
-    }
-
     // 홈화면
     @GetMapping("/home/{userId}")
     public HomeScreenDto getHomeScreen(@PathVariable Long userId){

@@ -20,8 +20,10 @@ import com.pard.weact.room.entity.Room;
 import com.pard.weact.room.repository.RoomRepo;
 import com.pard.weact.room.service.RoomService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -37,29 +39,29 @@ public class HabitPostService {
     private final UserRepo userRepo;
     private final PostPhotoService postPhotoService;
     private final LikedService likedService;
-    private final CommentRepo commentRepo;
     private final MemberInformationRepo memberRepo;
     private final RoomService roomService;
     private final MemberInformationService memberInformationService;
 
-    public Long createHabitPost(CreateHabitPostDto dto, MultipartFile image) throws IOException {
+    public Long createHabitPost(Long userId, CreateHabitPostDto dto, MultipartFile image) throws IOException {
 
-        if (dto.getUserId() == null || dto.getRoomId() == null) {
+        if (userId == null || dto.getRoomId() == null) {
             throw new IllegalArgumentException("UserId 또는 RoomId가 null입니다.");
         }
 
+        boolean exists = habitPostRepo.existsByUser_IdAndDateAndRoom_Id(userId, LocalDate.now(), dto.getRoomId());
 
-        boolean exists = habitPostRepo.existsByUser_IdAndDateAndRoom_Id(dto.getUserId(), LocalDate.now(), dto.getRoomId());
 
-        if (exists) {
-            throw new IllegalStateException("이미 오늘 인증을 완료했습니다.");
-        }
+            if (exists) {
+                System.out.println("🔥🔥🔥 인증 중복 발생");
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "이미 오늘 인증을 완료했습니다.");
+            }
 
         PostPhoto photo = postPhotoService.uploadAndSave(image);
         System.out.println("photo saved: " + (photo != null ? photo.getId() : "null"));
 
-        MemberInformation member = memberRepo.findByUserIdAndRoomId(dto.getUserId(), dto.getRoomId());
-        User user = userRepo.findById(dto.getUserId()).orElseThrow();
+        MemberInformation member = memberRepo.findByUserIdAndRoomId(userId, dto.getRoomId());
+        User user = userRepo.findById(userId).orElseThrow();
         Room room = roomRepo.findById(dto.getRoomId()).orElseThrow();
 
 
@@ -82,21 +84,22 @@ public class HabitPostService {
         return habitPostRepo.save(post).getId();
     } // 해명하고 나뉘는 건 부차적인 문제
 
-    public Long createHabitPostWithoutPhoto(CreateHabitPostDto dto) {
-        if (dto.getUserId() == null || dto.getRoomId() == null) {
+    public Long createHabitPostWithoutPhoto(Long userId, CreateHabitPostDto dto) {
+        if (userId == null || dto.getRoomId() == null) {
             throw new IllegalArgumentException("UserId 또는 RoomId가 null입니다.");
         }
 
 
-        boolean exists = habitPostRepo.existsByUser_IdAndDateAndRoom_Id(dto.getUserId(), LocalDate.now(), dto.getRoomId());
+        boolean exists = habitPostRepo.existsByUser_IdAndDateAndRoom_Id(userId, LocalDate.now(), dto.getRoomId());
 
 
         if (exists) {
-            throw new IllegalStateException("이미 오늘 인증을 완료했습니다.");
+            System.out.println("🔥🔥🔥 인증 중복 발생");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "이미 오늘 인증을 완료했습니다.");
         }
 
-        MemberInformation member = memberRepo.findByUserIdAndRoomId(dto.getUserId(), dto.getRoomId());
-        User user = userRepo.findById(dto.getUserId()).orElseThrow();
+        MemberInformation member = memberRepo.findByUserIdAndRoomId(userId, dto.getRoomId());
+        User user = userRepo.findById(userId).orElseThrow();
         Room room = roomRepo.findById(dto.getRoomId()).orElseThrow();
 
 
@@ -159,11 +162,7 @@ public class HabitPostService {
 
         Boolean liked = null;
         if (viewingUserId != null) {
-            MemberInformation viewingMember = memberRepo.findByUserIdAndRoomId(
-                    viewingUserId, post.getRoom().getId()
-            );
-
-            liked = likedService.isLiked(post.getId(), viewingMember.getId());
+            liked = likedService.isLiked(post.getId(), viewingUserId);
         }
 
         List<CommentDto> commentDtos = post.getComments().stream()

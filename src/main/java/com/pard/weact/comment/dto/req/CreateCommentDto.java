@@ -9,6 +9,5 @@ import lombok.*;
 @Builder
 public class CreateCommentDto {
     private Long postId;
-    private Long userId;
     private String content;
 }
