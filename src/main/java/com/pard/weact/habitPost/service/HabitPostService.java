@@ -10,6 +10,7 @@ import com.pard.weact.habitPost.dto.res.PostResultListDto;
 import com.pard.weact.habitPost.dto.res.PostResultOneDto;
 import com.pard.weact.habitPost.entity.HabitPost;
 import com.pard.weact.habitPost.repo.HabitPostRepo;
+import com.pard.weact.inAppNotification.entity.NotificationType;
 import com.pard.weact.liked.service.LikedService;
 import com.pard.weact.memberInformation.entity.MemberInformation;
 import com.pard.weact.memberInformation.repository.MemberInformationRepo;
@@ -70,6 +71,7 @@ public class HabitPostService {
         }
         member.updateDoNothing();
         roomService.checkOneDayCount(room.getId());
+        roomService.notifyOthers(user, room, NotificationType.POST_INFORM);
 
         return habitPostRepo.save(post).getId();
     } // 해명하고 나뉘는 건 부차적인 문제

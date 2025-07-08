@@ -30,8 +30,8 @@ public class InAppNotificationService {
                 inAppNotification -> NotificationDto
                         .builder()
                         .roomName(inAppNotification.getRoomName())
-                        .senderName(inAppNotification.getSenderName())
                         .message(inAppNotification.getMessage())
+                        .type(inAppNotification.getType().toString())
                         .build()
         ).toList();
     }

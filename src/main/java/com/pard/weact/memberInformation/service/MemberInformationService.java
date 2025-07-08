@@ -2,6 +2,7 @@ package com.pard.weact.memberInformation.service;
 
 import com.pard.weact.User.entity.User;
 import com.pard.weact.User.repo.UserRepo;
+import com.pard.weact.inAppNotification.entity.NotificationType;
 import com.pard.weact.memberInformation.dto.req.UpdateHabitAndRemindTimeDto;
 import com.pard.weact.memberInformation.dto.res.HamburgerInfoDto;
 import com.pard.weact.memberInformation.dto.res.MemberNameAndHabitDto;
@@ -9,6 +10,7 @@ import com.pard.weact.memberInformation.entity.MemberInformation;
 import com.pard.weact.memberInformation.repository.MemberInformationRepo;
 import com.pard.weact.room.entity.Room;
 import com.pard.weact.room.repository.RoomRepo;
+import com.pard.weact.room.service.RoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
