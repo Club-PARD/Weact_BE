@@ -5,11 +5,14 @@ import com.pard.weact.User.dto.req.LoginDto;
 import com.pard.weact.User.dto.res.*;
 import com.pard.weact.User.entity.User;
 import com.pard.weact.User.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -69,5 +72,23 @@ public class UserController {
         userService.deleteById(user.getId());
         return ResponseEntity.ok("입력한 " + user.getId() + "번 내용 삭제완료!");
     }
+
+    // user profile 사진 수정
+    @PostMapping(value = "/profile-photo", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Void> uploadProfilePhoto(
+            @AuthenticationPrincipal User user,
+            @RequestPart("image") MultipartFile image
+    ) {
+        userService.uploadProfilePhoto(user.getId(), image);
+        return ResponseEntity.ok().build();
+    }
+    // profile 사진 잘 들어갔는지 확인 -> 따로 구현 x
+    @GetMapping("/profile")
+    @Operation(summary = "현재 로그인한 유저의 프로필 정보 조회")
+    public ResponseEntity<UserProfileDto> getMyProfile(@AuthenticationPrincipal User user) {
+        UserProfileDto dto = userService.getMyProfile(user);
+        return ResponseEntity.ok(dto);
+    }
+
 }
 

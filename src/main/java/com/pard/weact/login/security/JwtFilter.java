@@ -43,8 +43,13 @@ public class JwtFilter extends OncePerRequestFilter {
                 // 4. 토큰에서 userId (String) 추출
                 String userId = jwtUtil.getUserIdFromToken(token);
 
-                // 5. userId로 DB에서 실제 User(Long id 포함) 조회
+                System.out.println("🔥 JWT에서 추출된 userId: " + userId);
+
                 var userOpt = userRepo.findByUserId(userId);
+
+                // ✅ 여기도 로그 추가!!
+                System.out.println("🔥 DB에서 user 조회 결과: " + userOpt.isPresent());
+
                 if (userOpt.isPresent()) {
                     var user = userOpt.get();
 

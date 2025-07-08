@@ -60,5 +60,26 @@ public class ImageUploader {
 
         return s3Client.getUrl(bucket, path).toString();
     }
+    @Value("${cloud.aws.s3.profile-folder}")
+    private String profileFolder;
 
+    public String uploadProfileImage(final ImageFile imageFile) {
+        final String path = profileFolder + imageFile.getHashedName();
+
+        final ObjectMetadata metadata = new ObjectMetadata();
+        metadata.setContentType(imageFile.getContentType());
+        metadata.setContentLength(imageFile.getSize());
+        metadata.setCacheControl(CACHE_CONTROL_VALUE);
+
+        try (final InputStream inputStream = imageFile.getInputStream()) {
+            final PutObjectRequest putObjectRequest = new PutObjectRequest(bucket, path, inputStream, metadata);
+            s3Client.putObject(putObjectRequest);
+        } catch (final AmazonServiceException e) {
+            throw new RuntimeException("INVALID_PROFILE_IMAGE_PATH");
+        } catch (final IOException e) {
+            throw new RuntimeException("INVALID_PROFILE_IMAGE");
+        }
+
+        return s3Client.getUrl(bucket, path).toString();
+    }
 }
