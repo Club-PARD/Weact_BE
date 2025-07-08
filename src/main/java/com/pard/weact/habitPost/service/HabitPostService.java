@@ -141,6 +141,7 @@ public class HabitPostService {
                 .userName(userName)
                 .imageUrl(path)
                 .likeCount(likeCount)
+                .postId(post.getId())
                 .build();
     }
 
