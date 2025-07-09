@@ -78,6 +78,7 @@ public class MemberInformationService {
                 memberInfo -> MemberNameAndHabitDto.builder()
                         .memberName(memberInfo.getUser().getUserName())
                         .memberHabit(memberInfo.getHabit())
+//                        .imageUrl(memberInfo.getUser().getProfilePhotoOrDefault()) // 메소드 미완
                         .build()
         ).toList();
 
@@ -85,6 +86,7 @@ public class MemberInformationService {
                 .myName(user.getUserName())
                 .myHabit(memberMe.getHabit())
                 .myPercent(memberMe.getPercent())
+//                .imageUrl(memberMe.getUser().getProfilePhotoOrDefault()) // 메소드 미완
                 .memberNameAndHabitDtos(memberNameAndHabitDtos)
                 .build();
     }

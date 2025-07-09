@@ -49,12 +49,14 @@ public class RoomService {
         List<NameAndPhotoDto> firstRankNames = firstRankMembers.stream()
                 .map(member -> NameAndPhotoDto.builder()
                         .userName(member.getUser().getUserName())
+//                        .imageUrl(member.getUser().getProfilePhotoOrDefault())  메소드 미완
                         .build()
                 ).toList();
 
         List<NameAndPhotoDto> secondRankNames = secondRankMembers.stream()
                 .map(member -> NameAndPhotoDto.builder()
                         .userName(member.getUser().getUserName())
+//                        .imageUrl(member.getUser().getProfilePhoto()) // 메소드 미완
                         .build()
                 ).toList();
 

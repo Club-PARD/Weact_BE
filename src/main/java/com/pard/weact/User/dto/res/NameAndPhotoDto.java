@@ -8,4 +8,5 @@ public class NameAndPhotoDto {
     private String userName;
 
     // 프로필사진 필드
+    private String imageUrl;
 }

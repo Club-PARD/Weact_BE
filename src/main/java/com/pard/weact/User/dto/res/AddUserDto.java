@@ -7,5 +7,6 @@ import lombok.*;
 public class AddUserDto {
     private Long id;
     private String userId;
+    private String imageUrl;
 }
 
