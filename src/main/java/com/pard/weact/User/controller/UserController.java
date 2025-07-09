@@ -78,7 +78,7 @@ public class UserController {
         return ResponseEntity.ok("입력한 " + user.getId() + "번 내용 삭제완료!");
     }
 
-    // user profile 사진 수정
+    // user profile 사진
     @SecurityRequirement(name = "jwtAuth")
     @PostMapping(value = "/profile-photo", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> uploadProfilePhoto(

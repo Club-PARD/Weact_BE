@@ -7,4 +7,5 @@ import lombok.*;
 public class MemberNameAndHabitDto {
     private String memberName;
     private String memberHabit;
+    private String imageUrl;
 }
