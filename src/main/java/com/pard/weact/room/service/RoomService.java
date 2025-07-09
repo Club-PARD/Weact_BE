@@ -201,11 +201,11 @@ public class RoomService {
     public CelebrationDto celebration(Long roomId){
         Room room = roomRepo.findById(roomId).orElseThrow();
 
-        CelebrationDto celebrationDto = CelebrationDto.builder()
+        return CelebrationDto celebrationDto = CelebrationDto.builder()
                 .roomName(room.getRoomName())
                 .period(room.getPeriodFormatted())
 //                .imageUrl() 1등 Default 사진 url 넣음 됨.
-                .build()
+                .build();
     }
 
     // 아래로 보조 메소드
