@@ -90,4 +90,10 @@ public class MemberInformationService {
                 .memberNameAndHabitDtos(memberNameAndHabitDtos)
                 .build();
     }
+
+    public void exitRoom(User user, Long roomId){
+        MemberInformation memberInformation = memberInformationRepo.findByUserIdAndRoomId(user.getId(), roomId);
+
+        memberInformationRepo.delete(memberInformation);
+    }
 }

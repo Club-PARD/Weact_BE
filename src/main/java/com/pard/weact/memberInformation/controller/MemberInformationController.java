@@ -27,4 +27,9 @@ public class MemberInformationController {
     public void updateHabitAndRemindTime(@AuthenticationPrincipal User user, @RequestBody UpdateHabitAndRemindTimeDto updateHabitAndRemindTimeDto){
         memberInformationService.updateHabitAndRemindTime(user.getId(), updateHabitAndRemindTimeDto);
     }
+
+    @DeleteMapping("/exit/{roomId}")
+    public void exitRoom(@AuthenticationPrincipal User user, @PathVariable Long roomId){
+        memberInformationService.exitRoom(user, roomId);
+    }
 }
