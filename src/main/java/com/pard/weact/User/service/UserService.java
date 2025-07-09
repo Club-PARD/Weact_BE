@@ -7,24 +7,19 @@ import com.pard.weact.User.repo.UserRepo;
 import com.pard.weact.memberInformation.entity.MemberInformation;
 import com.pard.weact.memberInformation.repository.MemberInformationRepo;
 import com.pard.weact.postPhoto.dto.ImageFile;
-import com.pard.weact.postPhoto.entity.PostPhoto;
 import com.pard.weact.postPhoto.service.ImageUploader;
 import com.pard.weact.room.entity.Room;
 import com.pard.weact.room.repository.RoomRepo;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
-
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -183,6 +178,4 @@ public class UserService {
                 .profilePhoto(imageUrl)
                 .build();
     }
-
-
 }
