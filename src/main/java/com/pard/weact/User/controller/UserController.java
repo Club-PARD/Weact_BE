@@ -6,6 +6,7 @@ import com.pard.weact.User.dto.res.*;
 import com.pard.weact.User.entity.User;
 import com.pard.weact.User.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -78,6 +79,7 @@ public class UserController {
     }
 
     // user profile 사진 수정
+    @SecurityRequirement(name = "jwtAuth")
     @PostMapping(value = "/profile-photo", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> uploadProfilePhoto(
             @AuthenticationPrincipal User user,
@@ -88,6 +90,7 @@ public class UserController {
     }
 
     // profile 사진 잘 들어갔는지 확인 -> 따로 구현 x
+    @SecurityRequirement(name = "jwtAuth")
     @GetMapping("/profile")
     @Operation(summary = "현재 로그인한 유저의 프로필 정보 조회")
     public ResponseEntity<UserProfileDto> getMyProfile(@AuthenticationPrincipal User user) {
