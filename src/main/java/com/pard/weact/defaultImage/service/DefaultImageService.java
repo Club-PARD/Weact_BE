@@ -22,7 +22,7 @@ public class DefaultImageService {
 
     public LongIdDto uploadDefaultImage(MultipartFile file) {
         ImageFile imageFile = convertToImageFile(file);
-        String url = imageUploader.uploadProfileImage(imageFile);
+        String url = imageUploader.uploadBasicImage(imageFile);
 
         DefaultImage saved = defaultImageRepo.save(DefaultImage.builder()
                 .originalName(file.getOriginalFilename())
