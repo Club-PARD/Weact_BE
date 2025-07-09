@@ -12,6 +12,7 @@ import com.pard.weact.memberInformation.repository.MemberInformationRepo;
 import com.pard.weact.memberInformation.service.MemberInformationService;
 import com.pard.weact.room.dto.req.CreateRoomDto;
 import com.pard.weact.room.dto.res.AfterCreateRoomDto;
+import com.pard.weact.room.dto.res.CelebrationDto;
 import com.pard.weact.room.dto.res.CheckPointDto;
 import com.pard.weact.room.dto.res.FinalRankingDto;
 import com.pard.weact.room.entity.Room;
@@ -195,6 +196,16 @@ public class RoomService {
         LocalDate today = LocalDate.now();
 
         return toLocalDate(room.getStartDate()).plusDays(2).isAfter(today);
+    }
+
+    public CelebrationDto celebration(Long roomId){
+        Room room = roomRepo.findById(roomId).orElseThrow();
+
+        CelebrationDto celebrationDto = CelebrationDto.builder()
+                .roomName(room.getRoomName())
+                .period(room.getPeriodFormatted())
+//                .imageUrl() 1등 Default 사진 url 넣음 됨.
+                .build()
     }
 
     // 아래로 보조 메소드
