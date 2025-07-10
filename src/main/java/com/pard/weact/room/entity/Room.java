@@ -97,5 +97,14 @@ public class Room {
 
         return String.join(",", chars);  // 쉼표로 join
     }
+
+    public String getPeriodFormattedInclusive() {
+        LocalDate start = startDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate end = endDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+        DateTimeFormatter yearFormatter = DateTimeFormatter.ofPattern("yyyy.M.d");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M.d");
+        return start.format(yearFormatter) + " - " + end.format(formatter);
+    }
 }
 

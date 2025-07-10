@@ -163,7 +163,7 @@ public class RoomService {
                 .roomName(room.getRoomName())
                 .dayCountByWeek(room.getDayCountByWeek())
                 .reward(room.getReward())
-                .period(room.getPeriodFormatted())
+                .period(room.getPeriodFormattedInclusive())
                 .days(room.daysFormatted())
                 .creatorName(creatorName)
                 .checkPoints(createRoomDto.checkPoints())
@@ -206,7 +206,7 @@ public class RoomService {
 
         return CelebrationDto.builder()
                 .roomName(room.getRoomName())
-                .period(room.getPeriodFormatted())
+                .period(room.getPeriodFormattedInclusive())
 //                .imageUrl() 1등 Default 사진 url 넣음 됨.
                 .build();
     }
