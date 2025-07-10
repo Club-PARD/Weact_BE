@@ -78,7 +78,7 @@ public class MemberInformationService {
                 memberInfo -> MemberNameAndHabitDto.builder()
                         .memberName(memberInfo.getUser().getUserName())
                         .memberHabit(memberInfo.getHabit())
-//                        .imageUrl(memberInfo.getUser().getProfilePhotoOrDefault()) // 메소드 미완
+                        .imageUrl(memberInfo.getUser().getProfilePhotoOrDefault())
                         .build()
         ).toList();
 

@@ -118,7 +118,7 @@ public class UserService {
         return AddUserDto.builder()
                 .id(user.getId())
                 .userId(user.getUserId())
-//                .imageUrl(user.getProfilePhotoOrDefault()) 메소드 미완
+                .imageUrl(user.getProfilePhotoOrDefault())
                 .build();
     }
 
