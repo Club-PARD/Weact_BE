@@ -52,4 +52,18 @@ public class InAppNotificationService {
 
         inAppNotificationRepo.save(inAppNotification);
     }
+
+    public void createNotification(NotificationType type, String name, Room room, Long targetId){
+        String message = name + type.getMessage();
+
+        InAppNotification inAppNotification = InAppNotification.builder()
+                .roomName(room.getRoomName())
+                .message(message)
+                .type(type)
+                .roomId(room.getId())
+                .targetId(targetId)
+                .build();
+
+        inAppNotificationRepo.save(inAppNotification);
+    }
 }
