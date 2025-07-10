@@ -32,17 +32,19 @@ public class InAppNotificationService {
                         .roomName(inAppNotification.getRoomName())
                         .message(inAppNotification.getMessage())
                         .type(inAppNotification.getType().toString())
+                        .roomId(inAppNotification.getRoomId())
                         .build()
         ).toList();
     }
 
-    public void createNotification(NotificationType type, String name, String roomName, Long targetId){
+    public void createNotification(NotificationType type, String name, Room room, Long targetId){
         String message = name + type.getMessage();
 
         InAppNotification inAppNotification = InAppNotification.builder()
-                .roomName(roomName)
+                .roomName(room.getRoomName())
                 .message(message)
                 .type(type)
+                .roomId(room.getId())
                 .targetId(targetId)
                 .build();
 

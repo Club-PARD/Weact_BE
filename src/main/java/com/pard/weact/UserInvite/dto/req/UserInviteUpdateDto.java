@@ -6,6 +6,5 @@ import lombok.*;
 @AllArgsConstructor @NoArgsConstructor
 public class UserInviteUpdateDto {
     private Long roomId;
-
     private int state;
 }

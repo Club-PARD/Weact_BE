@@ -3,6 +3,7 @@ package com.pard.weact.UserInvite.controller;
 import com.pard.weact.User.entity.User;
 import com.pard.weact.UserInvite.dto.req.UserInviteUpdateDto;
 import com.pard.weact.UserInvite.service.UserInviteService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -16,7 +17,8 @@ import org.springframework.web.bind.annotation.*;
 public class UserInviteController {
     private final UserInviteService userInviteService;
 
-    @PatchMapping("")
+    @PostMapping("")
+    @Operation(summary = "Patch 대체")
     @Transactional
     public void responseUpdate(@AuthenticationPrincipal User user, @RequestBody UserInviteUpdateDto userInviteUpdateDto){
         userInviteService.responseUpdate(user.getId(), userInviteUpdateDto);

@@ -240,7 +240,7 @@ public class RoomService {
         for(MemberInformation memberInformation : memberInformations){
             inAppNotificationService.createNotification(type,
                     memberInformation.getUser().getUserName(),
-                    memberInformation.getRoom().getRoomName(),
+                    memberInformation.getRoom(),
                     memberInformation.getUser().getId());
         }
     }
