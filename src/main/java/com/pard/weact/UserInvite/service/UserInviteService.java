@@ -40,7 +40,7 @@ public class UserInviteService {
 
         for(User user : users){
             // 초대 받는 사람 전부 target 만들어야 됨.
-            inAppNotificationService.createNotification(NotificationType.INVITE, user.getUserName(), room, user.getId());
+            inAppNotificationService.createNotification(NotificationType.INVITE, creatorName, room, user.getId());
         }
 
         userInviteRepo.saveAll(userInvites);
