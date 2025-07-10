@@ -60,7 +60,7 @@ public class RoomService {
         List<NameAndPhotoDto> firstRankNames = firstRankMembers.stream()
                 .map(member -> NameAndPhotoDto.builder()
                         .userName(member.getUser().getUserName())
-                        .imageUrl(member.getUser().getProfilePhotoOrDefault())  메소드 미완
+                        .imageUrl(member.getUser().getProfilePhotoOrDefault())
                         .build()
                 ).toList();
 
