@@ -11,10 +11,7 @@ import com.pard.weact.memberInformation.entity.MemberInformation;
 import com.pard.weact.memberInformation.repository.MemberInformationRepo;
 import com.pard.weact.memberInformation.service.MemberInformationService;
 import com.pard.weact.room.dto.req.CreateRoomDto;
-import com.pard.weact.room.dto.res.AfterCreateRoomDto;
-import com.pard.weact.room.dto.res.CelebrationDto;
-import com.pard.weact.room.dto.res.CheckPointDto;
-import com.pard.weact.room.dto.res.FinalRankingDto;
+import com.pard.weact.room.dto.res.*;
 import com.pard.weact.room.entity.Room;
 import com.pard.weact.room.repository.RoomRepo;
 import lombok.RequiredArgsConstructor;
@@ -42,6 +39,19 @@ public class RoomService {
     private final MemberInformationService memberInformationService;
     private final MemberInformationRepo memberInformationRepo;
     private final InAppNotificationService inAppNotificationService;
+
+    public RoomInfoDto getRoomInfo(Long roomId){
+        Room room = roomRepo.findById(roomId).orElseThrow();
+
+        return RoomInfoDto.builder()
+                .roomName(room.getRoomName())
+                .dayCountByWeek(room.getDayCountByWeek())
+                .reward(room.getReward())
+                .period(room.getPeriodFormattedInclusive())
+                .days(room.daysFormatted())
+                .checkPoints(room.checkPoints())
+                .build();
+    }
 
     public CheckPointDto getCheckPoint(Long roomId){ // 중간점검 랭킹 (1, 2등 리스트, 이름만, 공동가능)
         List<MemberInformation> firstRankMembers =  memberInformationRepo.findTopMembersByRoomId(roomId);
@@ -114,7 +124,6 @@ public class RoomService {
                 .toList();
     }
 
-
     public boolean checkOneDayCount(Long roomId){
         Room room = roomRepo.findById(roomId).orElseThrow();
 
@@ -160,13 +169,7 @@ public class RoomService {
         // 필요한 방 정보 다시 보내주기
         return AfterCreateRoomDto.builder()
                 .roomId(room.getId())
-                .roomName(room.getRoomName())
-                .dayCountByWeek(room.getDayCountByWeek())
-                .reward(room.getReward())
-                .period(room.getPeriodFormattedInclusive())
-                .days(room.daysFormatted())
                 .creatorName(creatorName)
-                .checkPoints(createRoomDto.checkPoints())
                 .build();
     }
 

@@ -36,27 +36,6 @@ public class CreateRoomDto {
         return (int) ChronoUnit.DAYS.between(start, end) + 1;
     }
 
-    // 체크포인트 계산
-    public List<LocalDate> checkPoints() { // 전체 일수의 20퍼센트마다 체크포인트로 설정.
-        if (startDate == null || endDate == null) return List.of();
-
-        LocalDate start = toLocalDate(startDate);
-        LocalDate end = toLocalDate(endDate);
-        int totalDays = (int) ChronoUnit.DAYS.between(start, end) + 1;
-
-        int interval = Math.max(1, (int) Math.floor(totalDays * 0.2));
-        List<LocalDate> checkpoints = new java.util.ArrayList<>();
-
-        for (int i = interval; i < totalDays; i += interval) {
-            // 체크포인트가 시작, 종료일과 겹치지 않을 때만 추가.
-            if(!start.plusDays(i).isEqual(end) && !start.plusDays(i).isEqual(start)){
-                checkpoints.add(start.plusDays(i));
-            }
-        }
-
-        return checkpoints;
-    }
-
     public int coinCount(int dayCount){ // 전체 일수의 10퍼센트 갯수 반환
         return  (int) (dayCount / 10.0);
     }

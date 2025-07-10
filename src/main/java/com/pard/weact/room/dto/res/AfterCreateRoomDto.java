@@ -10,10 +10,4 @@ import java.util.List;
 public class AfterCreateRoomDto {
     private String creatorName;
     private Long roomId;
-    private String roomName;
-    private int dayCountByWeek;
-    private List<LocalDate> checkPoints;
-    private String reward;
-    private String period;
-    private String days;
 }

@@ -2,10 +2,7 @@ package com.pard.weact.room.controller;
 
 import com.pard.weact.User.entity.User;
 import com.pard.weact.room.dto.req.CreateRoomDto;
-import com.pard.weact.room.dto.res.AfterCreateRoomDto;
-import com.pard.weact.room.dto.res.CelebrationDto;
-import com.pard.weact.room.dto.res.CheckPointDto;
-import com.pard.weact.room.dto.res.FinalRankingDto;
+import com.pard.weact.room.dto.res.*;
 import com.pard.weact.room.service.RoomService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +21,11 @@ public class RoomController {
     @PostMapping("")
     public AfterCreateRoomDto createRoom(@AuthenticationPrincipal User user, @RequestBody CreateRoomDto createRoomDto){
         return roomService.createRoom(user.getId(), createRoomDto);
+    }
+
+    @GetMapping("/home/{roomId}")
+    public RoomInfoDto getRoomInfo(@PathVariable Long roomId){
+        return roomService.getRoomInfo(roomId);
     }
 
     @GetMapping("/checkPoint/{roomId}")
