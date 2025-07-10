@@ -18,6 +18,7 @@ public class InAppNotification {
     private String roomName;
     private String message;
     private Long roomId;
+    private Long userInviteId;
 
     @Enumerated(EnumType.STRING)
     private NotificationType type;

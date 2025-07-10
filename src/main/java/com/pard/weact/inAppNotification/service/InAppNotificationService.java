@@ -33,11 +33,12 @@ public class InAppNotificationService {
                         .message(inAppNotification.getMessage())
                         .type(inAppNotification.getType().toString())
                         .roomId(inAppNotification.getRoomId())
+                        .userInviteId(inAppNotification.getUserInviteId())
                         .build()
         ).toList();
     }
 
-    public void createNotification(NotificationType type, String name, Room room, Long targetId){
+    public void createNotification(NotificationType type, String name, Room room, Long targetId, Long userInviteId){
         String message = name + type.getMessage();
 
         InAppNotification inAppNotification = InAppNotification.builder()
@@ -46,6 +47,7 @@ public class InAppNotificationService {
                 .type(type)
                 .roomId(room.getId())
                 .targetId(targetId)
+                .userInviteId(userInviteId)
                 .build();
 
         inAppNotificationRepo.save(inAppNotification);
