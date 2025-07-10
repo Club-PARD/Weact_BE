@@ -4,6 +4,7 @@ import com.pard.weact.User.entity.User;
 import com.pard.weact.memberInformation.dto.req.UpdateHabitAndRemindTimeDto;
 import com.pard.weact.memberInformation.dto.res.HamburgerInfoDto;
 import com.pard.weact.memberInformation.service.MemberInformationService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -22,7 +23,8 @@ public class MemberInformationController {
         return memberInformationService.showHamburgerBar(user.getId(), roomId);
     }
 
-    @PatchMapping("/habitAndRemindTime")
+    @PostMapping("/habitAndRemindTime")
+    @Operation(summary = "patch 기능")
     @Transactional
     public void updateHabitAndRemindTime(@AuthenticationPrincipal User user, @RequestBody UpdateHabitAndRemindTimeDto updateHabitAndRemindTimeDto){
         memberInformationService.updateHabitAndRemindTime(user.getId(), updateHabitAndRemindTimeDto);

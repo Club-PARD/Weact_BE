@@ -44,7 +44,9 @@ public class SecurityConfig {
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**",
                                 "/auth/**",
-                                "/user/**"
+                                "/user/**",
+                                "/health",      // ✅ 이 줄 추가
+                                "/"             // ✅ 또는 루트 경로도 허용 (선택)
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
