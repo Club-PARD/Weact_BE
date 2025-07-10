@@ -92,5 +92,10 @@ public class Room {
         return start.format(formatter) + " - " + end.format(formatter);
     }
 
+    public String daysFormatted(){
+        String[] chars = this.days.split("");  // 각 글자를 분리
+
+        return String.join(",", chars);  // 쉼표로 join
+    }
 }
 

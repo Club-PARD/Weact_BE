@@ -157,11 +157,14 @@ public class RoomService {
         // 나머지 인원에 대해서는 초대장 만들기 (초대받은 사람들 id, 만든 사람 이름, room)
         userInviteService.createUserInvites(createRoomDto.getInvitedIds(), room ,creatorName);
 
-        // 위에서 만든 초대장 보내기
+        // 필요한 방 정보 다시 보내주기
         return AfterCreateRoomDto.builder()
                 .roomId(room.getId())
                 .roomName(room.getRoomName())
                 .dayCountByWeek(room.getDayCountByWeek())
+                .reward(room.getReward())
+                .period(room.getPeriodFormatted())
+                .days(room.daysFormatted())
                 .creatorName(creatorName)
                 .checkPoints(createRoomDto.checkPoints())
                 .build();

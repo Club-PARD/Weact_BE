@@ -1,7 +1,6 @@
 package com.pard.weact.User.controller;
 
 import com.pard.weact.User.dto.req.CreateUserDto;
-import com.pard.weact.User.dto.req.LoginDto;
 import com.pard.weact.User.dto.res.*;
 import com.pard.weact.User.entity.User;
 import com.pard.weact.User.service.UserService;
