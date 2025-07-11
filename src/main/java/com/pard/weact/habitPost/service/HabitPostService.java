@@ -151,6 +151,7 @@ public class HabitPostService {
                 .imageUrl(path)
                 .likeCount(likeCount)
                 .postId(post.getId())
+                .isHaemyeong(post.isHaemyeong())
                 .build();
     }
 
@@ -184,6 +185,7 @@ public class HabitPostService {
                 .likeCount(likeCount)
                 .liked(liked)
                 .comments(commentDtos)
+                .isHaemyeong(post.isHaemyeong())
                 .build();
     }
 

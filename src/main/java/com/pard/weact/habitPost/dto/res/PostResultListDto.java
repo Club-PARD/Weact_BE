@@ -12,4 +12,6 @@ public class PostResultListDto {
     private String imageUrl;
     private Long likeCount; // 좋아요 수
     private Long postId;
+    private boolean isHaemyeong;
+
 }
