@@ -1,6 +1,4 @@
-<p align="center">
-  <img src="img_1.png" alt="WeAct 로고" width="300"/>
-</p>
+![logo.png](src/main/resources/templates/logo.png)
 
 # WeAct - 습관 실천 플랫폼
 
@@ -9,7 +7,7 @@
 
 ---
 
-## 📌 팀 소개 및 주제
+## 📌 주제
 
 ### 🎯 주제: 함께 실천하는 습관 플랫폼, WeAct
 
