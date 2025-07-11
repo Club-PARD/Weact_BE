@@ -20,7 +20,10 @@
 
 ## 📌 자기소개 및 역할 분담
 
-<img src="src/main/resources/templates/together.jpeg" width="400"/>
+<p align="center">
+  <img src="src/main/resources/templates/together.jpeg" width="300"/>
+</p>
+
 
 > ERD 설계는 두 사람이 함께 진행하였습니다.
 
