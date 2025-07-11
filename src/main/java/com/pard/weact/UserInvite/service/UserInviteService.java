@@ -41,13 +41,13 @@ public class UserInviteService {
                         .build())
                 .toList();
 
+        userInviteRepo.saveAll(userInvites);
+
         for(User user : users){
             // 초대 받는 사람 전부 target 만들어야 됨.
             UserInvite userInvite = userInviteRepo.findByUserIdAndRoomId(user.getId(), room.getId());
             inAppNotificationService.createNotification(NotificationType.INVITE, creatorName, room, user.getId(), userInvite.getId());
         }
-
-        userInviteRepo.saveAll(userInvites);
     }
 
     public void responseUpdate(Long userId, UserInviteUpdateDto userInviteUpdateDto){
