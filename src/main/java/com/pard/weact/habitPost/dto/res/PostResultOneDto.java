@@ -17,4 +17,5 @@ public class PostResultOneDto {
     private Long likeCount;
     private Boolean liked;
     private List<CommentDto> comments; // 댓글 목록
+    private boolean isHaemyeong;// 해명인지 아닌지
 }

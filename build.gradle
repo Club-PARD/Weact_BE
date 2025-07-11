@@ -49,6 +49,13 @@ dependencies {
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5' // JSON 파싱용 (jackson)
     implementation 'org.springframework.boot:spring-boot-starter-security'
 
+    // Spring Boot 로깅 관련 의존성
+    implementation 'org.springframework.boot:spring-boot-starter-logging'
+
+    // 필요한 경우 Logback 의존성
+    // implementation 'ch.qos.logback:logback-classic:1.2.6'
+    // implementation 'ch.qos.logback:logback-core:1.2.6'
+
 }
 
 tasks.named('test') {

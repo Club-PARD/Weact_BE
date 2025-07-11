@@ -27,6 +27,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
@@ -40,6 +43,7 @@ public class HabitPostController {
 
     private final HabitPostService habitPostService;
     private final ObjectMapper objectMapper;
+    private static final Logger logger = LoggerFactory.getLogger(HabitPostController.class);
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "습관 인증 업로드")
@@ -51,6 +55,14 @@ public class HabitPostController {
             @RequestPart("request") String requestJson,
             @RequestPart(value = "image", required = false) MultipartFile image
     ) throws IOException {
+        // 로그 출력
+        logger.info("Received requestJson: {}", requestJson);
+        if (image != null) {
+            logger.info("Received image: {}", image.getOriginalFilename());
+        } else {
+            logger.info("No image received.");
+        }
+
         CreateHabitPostDto request = objectMapper.readValue(requestJson, CreateHabitPostDto.class);
 
         Long postId;
