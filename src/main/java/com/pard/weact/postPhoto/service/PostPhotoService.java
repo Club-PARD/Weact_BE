@@ -56,7 +56,7 @@ public class PostPhotoService {
     }
     public PostPhoto getDefaultHaemyeongPhoto() {
         // 1. 고정된 해명 이미지 엔티티를 가져온다
-        PostPhoto defaultOriginal = postPhotoRepo.findById(1L)
+        PostPhoto defaultOriginal = postPhotoRepo.findById(3L)
                 .orElseThrow(() -> new IllegalArgumentException("기본 해명 이미지가 존재하지 않습니다."));
 
         // 2. 기존 정보를 기반으로 새로운 이미지 엔티티 생성

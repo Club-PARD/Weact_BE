@@ -5,6 +5,7 @@ import com.pard.weact.defaultImage.dto.res.PathDto;
 import com.pard.weact.defaultImage.service.DefaultImageService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,7 +17,7 @@ public class DefaultImageController {
 
     private final DefaultImageService defaultImageService;
 
-    @PostMapping
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "기본 이미지 업로드")
     public ResponseEntity<LongIdDto> upload(@RequestPart("image") MultipartFile image) {
         return ResponseEntity.ok(defaultImageService.uploadDefaultImage(image));

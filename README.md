@@ -1,6 +1,7 @@
 ![logo.png](src/main/resources/templates/logo.png)
 
-# WeAct - 습관 실천 플랫폼
+# WeAct - 
+습관 실천 플랫폼
 
 **WeAct**는 좋은 습관을 만들고, 기록하고, 공유하는 사람들을 위한 실천 기반 SNS 플랫폼입니다.  
 혼자서 하기 어려운 습관을 친구와 함께 인증하며, 재미와 책임감을 통해 꾸준히 실천할 수 있도록 도와줍니다.
@@ -53,6 +54,38 @@
 - MySQL
 - AWS (EC2, RDS)
 
+---
+## 🚀 주요 플로우
+
+### 1. 로그인/회원가입
+<div>
+  <img src="src/main/resources/templates/✅%20완료.png" width="200" style="display:inline-block; margin-right: 10px;"/>
+  <img src="src/main/resources/templates/✅%20완료-2.png" width="200" style="display:inline-block;"/>
+</div>
+
+---
+
+### 2. 방 생성 및 친구추가
+<div>
+  <img src="src/main/resources/templates/✅.png" width="200" style="display:inline-block; margin-right: 10px;"/>
+  <img src="src/main/resources/templates/✅-2.png" width="200" style="display:inline-block; margin-right: 10px;"/>
+  <img src="src/main/resources/templates/✅-3.png" width="200" style="display:inline-block;"/>
+</div>
+
+---
+
+### 3. 보드 화면
+<div>
+  <img src="src/main/resources/templates/⚠️.png" width="200" style="display:inline-block; margin-right: 10px;"/>
+  <img src="src/main/resources/templates/⚠️%20정보%20연결%20X.png" width="200" style="display:inline-block;"/>
+</div>
+
+---
+
+### 4. 결과 화면
+<div>
+  <img src="src/main/resources/templates/⚠️GUI%20수정중.png" width="200" style="display:inline-block;"/>
+</div>
 ---
 
 ## 🚀 주요 기능 소개
