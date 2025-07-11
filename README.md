@@ -59,32 +59,32 @@
 
 ### 1. 로그인/회원가입
 <div>
-  <img src="src/main/resources/templates/✅%20완료.png" width="300" style="display:inline-block; margin-right: 10px;"/>
-  <img src="src/main/resources/templates/✅%20완료-2.png" width="300" style="display:inline-block;"/>
+  <img src="src/main/resources/templates/✅%20완료.png" width="200" style="display:inline-block; margin-right: 10px;"/>
+  <img src="src/main/resources/templates/✅%20완료-2.png" width="200" style="display:inline-block;"/>
 </div>
 
 ---
 
 ### 2. 방 생성 및 친구추가
 <div>
-  <img src="src/main/resources/templates/✅.png" width="300" style="display:inline-block; margin-right: 10px;"/>
-  <img src="src/main/resources/templates/✅-2.png" width="300" style="display:inline-block; margin-right: 10px;"/>
-  <img src="src/main/resources/templates/✅-3.png" width="300" style="display:inline-block;"/>
+  <img src="src/main/resources/templates/✅.png" width="200" style="display:inline-block; margin-right: 10px;"/>
+  <img src="src/main/resources/templates/✅-2.png" width="200" style="display:inline-block; margin-right: 10px;"/>
+  <img src="src/main/resources/templates/✅-3.png" width="200" style="display:inline-block;"/>
 </div>
 
 ---
 
 ### 3. 보드 화면
 <div>
-  <img src="src/main/resources/templates/⚠️.png" width="300" style="display:inline-block; margin-right: 10px;"/>
-  <img src="src/main/resources/templates/⚠️%20정보%20연결%20X.png" width="300" style="display:inline-block;"/>
+  <img src="src/main/resources/templates/⚠️.png" width="200" style="display:inline-block; margin-right: 10px;"/>
+  <img src="src/main/resources/templates/⚠️%20정보%20연결%20X.png" width="200" style="display:inline-block;"/>
 </div>
 
 ---
 
 ### 4. 결과 화면
 <div>
-  <img src="src/main/resources/templates/⚠️GUI%20수정중.png" width="300" style="display:inline-block;"/>
+  <img src="src/main/resources/templates/⚠️GUI%20수정중.png" width="200" style="display:inline-block;"/>
 </div>
 ---
 
