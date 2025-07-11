@@ -5,6 +5,10 @@
 **WeAct**는 좋은 습관을 만들고, 기록하고, 공유하는 사람들을 위한 실천 기반 SNS 플랫폼입니다.  
 혼자서 하기 어려운 습관을 친구와 함께 인증하며, 재미와 책임감을 통해 꾸준히 실천할 수 있도록 도와줍니다.
 
+<p align="center">
+  <img src="src/main/resources/templates/appIcon.png" width="300"/>
+</p>
+
 ---
 
 ## 📌 주제
@@ -97,7 +101,4 @@
 
 ---
 
-<p align="center">
-  <img src="src/main/resources/templates/appIcon.png" width="300"/>
-</p>
 
