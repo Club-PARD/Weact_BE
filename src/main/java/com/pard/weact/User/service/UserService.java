@@ -31,7 +31,7 @@ public class UserService {
     private final MemberInformationRepo memberInformationRepo;
     private final ImageUploader imageUploader;
 
-    private final String defaultProfileImageUrl = "https://weact-habit-app-image.s3.ap-northeast-2.amazonaws.com/profile/default_profile.png";
+    private final String defaultProfileImageUrl = "https://weact-habit-app-image.s3.ap-northeast-2.amazonaws.com/basic/e394e58d-0a78-4409-b6c3-1c3db9893ee8";
 
     public AfterCreateUserDto createUser(CreateUserDto req){
 
