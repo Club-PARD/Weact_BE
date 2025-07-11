@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface InAppNotificationRepo extends JpaRepository<InAppNotification, Long> {
     List<InAppNotification> findAllByTargetId(Long userId);
+
+    InAppNotification findByUserInviteId(Long userInviteId);
 }

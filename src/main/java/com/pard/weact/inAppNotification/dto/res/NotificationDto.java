@@ -9,4 +9,5 @@ public class NotificationDto {
     private String message;
     private String type;
     private Long roomId;
+    private Long userInviteId;
 }

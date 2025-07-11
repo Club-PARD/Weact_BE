@@ -86,7 +86,7 @@ public class MemberInformationService {
                 .myName(user.getUserName())
                 .myHabit(memberMe.getHabit())
                 .myPercent(memberMe.getPercent())
-//                .imageUrl(memberMe.getUser().getProfilePhotoOrDefault()) // 메소드 미완
+                .imageUrl(memberMe.getUser().getProfilePhotoOrDefault()) // 메소드 미완
                 .memberNameAndHabitDtos(memberNameAndHabitDtos)
                 .build();
     }

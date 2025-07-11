@@ -33,8 +33,26 @@ public class InAppNotificationService {
                         .message(inAppNotification.getMessage())
                         .type(inAppNotification.getType().toString())
                         .roomId(inAppNotification.getRoomId())
+                        .userInviteId(inAppNotification.getUserInviteId())
                         .build()
         ).toList();
+    }
+
+
+    // 초대장 만들 때는 초대장 id 필요함 -> 오버라이딩
+    public void createNotification(NotificationType type, String name, Room room, Long targetId, Long userInviteId){
+        String message = name + type.getMessage();
+
+        InAppNotification inAppNotification = InAppNotification.builder()
+                .roomName(room.getRoomName())
+                .message(message)
+                .type(type)
+                .roomId(room.getId())
+                .targetId(targetId)
+                .userInviteId(userInviteId)
+                .build();
+
+        inAppNotificationRepo.save(inAppNotification);
     }
 
     public void createNotification(NotificationType type, String name, Room room, Long targetId){
