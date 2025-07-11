@@ -1,6 +1,6 @@
 ![logo.png](src/main/resources/templates/logo.png)
 
-# WeAct - 
+# WeAct 
 습관 실천 플랫폼
 
 **WeAct**는 좋은 습관을 만들고, 기록하고, 공유하는 사람들을 위한 실천 기반 SNS 플랫폼입니다.  
