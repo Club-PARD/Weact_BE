@@ -1,5 +1,6 @@
 package com.pard.weact.habitPost.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.pard.weact.User.entity.User;
 import com.pard.weact.comment.entity.Comment;
 import com.pard.weact.liked.entity.Liked;
@@ -47,6 +48,7 @@ public class HabitPost {
 
     private LocalDate date;
     private String message;
+
     private boolean isHaemyeong;
 
     @OneToMany(mappedBy = "habitPost", cascade = CascadeType.ALL, orphanRemoval = true)
