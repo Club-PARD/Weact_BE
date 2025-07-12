@@ -28,6 +28,7 @@ public class MemberInformation {
     private User user;
 
     @OneToMany(mappedBy = "memberInformation", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @Builder.Default
     private List<HabitPost> habitPosts = new ArrayList<>();
 
     // 방 정보
