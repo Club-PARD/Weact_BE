@@ -21,6 +21,7 @@ import com.pard.weact.room.entity.Room;
 import com.pard.weact.room.repository.RoomRepo;
 import com.pard.weact.room.service.RoomService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -35,6 +36,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class HabitPostService {
 
     private final HabitPostRepo habitPostRepo;
@@ -90,28 +92,42 @@ public class HabitPostService {
 
     public Long createHabitPostWithoutPhoto(Long userId, CreateHabitPostDto dto) {
         if (userId == null || dto.getRoomId() == null) {
+            log.error("❌ userId 또는 roomId가 null입니다. userId: {}, roomId: {}", userId, dto.getRoomId());
             throw new IllegalArgumentException("UserId 또는 RoomId가 null입니다.");
         }
 
+        log.info("✅ 해명 인증 요청 시작 - userId: {}, roomId: {}", userId, dto.getRoomId());
 
         boolean exists = habitPostRepo.existsByUser_IdAndDateAndRoom_Id(userId, LocalDate.now(), dto.getRoomId());
-
-
         if (exists) {
-            System.out.println("🔥🔥🔥 인증 중복 발생");
+            log.warn("🔥🔥🔥 중복 인증 발생 - userId: {}, roomId: {}, date: {}", userId, dto.getRoomId(), LocalDate.now());
             throw new ResponseStatusException(HttpStatus.CONFLICT, "이미 오늘 인증을 완료했습니다.");
         }
 
         MemberInformation member = memberRepo.findByUserIdAndRoomId(userId, dto.getRoomId());
-        User user = userRepo.findById(userId).orElseThrow();
-        Room room = roomRepo.findById(dto.getRoomId()).orElseThrow();
+        if (member == null) {
+            log.error("❌ MemberInformation 없음 - userId: {}, roomId: {}", userId, dto.getRoomId());
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "멤버 정보를 찾을 수 없습니다.");
+        }
 
+        User user = userRepo.findById(userId)
+                .orElseThrow(() -> {
+                    log.error("❌ 유저 없음 - userId: {}", userId);
+                    return new ResponseStatusException(HttpStatus.NOT_FOUND, "유저를 찾을 수 없습니다.");
+                });
+
+        Room room = roomRepo.findById(dto.getRoomId())
+                .orElseThrow(() -> {
+                    log.error("❌ 방 없음 - roomId: {}", dto.getRoomId());
+                    return new ResponseStatusException(HttpStatus.NOT_FOUND, "방을 찾을 수 없습니다.");
+                });
 
         PostPhoto defaultPhoto = postPhotoService.getDefaultHaemyeongPhoto();
+        log.info("📸 기본 해명 사진 ID: {}", defaultPhoto.getId());
 
         HabitPost post = HabitPost.builder()
                 .message(dto.getMessage())
-                .photo(defaultPhoto) // 해명 이미지 저장
+                .photo(defaultPhoto)
                 .room(room)
                 .user(user)
                 .member(member)
@@ -119,7 +135,10 @@ public class HabitPostService {
                 .isHaemyeong(dto.getIsHaemyeong())
                 .build();
 
-        return habitPostRepo.save(post).getId();
+        HabitPost savedPost = habitPostRepo.save(post);
+        log.info("✅ 해명 인증 저장 완료 - postId: {}, userId: {}, roomId: {}", savedPost.getId(), userId, dto.getRoomId());
+
+        return savedPost.getId();
     }
     public List<PostResultListDto> readAllInRoom(Long roomId, LocalDate date) {
         List<HabitPost> posts = habitPostRepo.findAllByRoomIdAndDate(roomId, date);
