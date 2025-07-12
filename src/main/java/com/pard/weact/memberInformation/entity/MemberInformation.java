@@ -27,7 +27,7 @@ public class MemberInformation {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany(mappedBy = "memberInformation", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
     @Builder.Default
     private List<HabitPost> habitPosts = new ArrayList<>();
 
