@@ -5,7 +5,6 @@ import com.pard.weact.User.repo.UserRepo;
 import com.pard.weact.UserInvite.dto.req.UserInviteUpdateDto;
 import com.pard.weact.UserInvite.entity.UserInvite;
 import com.pard.weact.UserInvite.repository.UserInviteRepo;
-import com.pard.weact.inAppNotification.entity.InAppNotification;
 import com.pard.weact.inAppNotification.entity.NotificationType;
 import com.pard.weact.inAppNotification.repository.InAppNotificationRepo;
 import com.pard.weact.inAppNotification.service.InAppNotificationService;

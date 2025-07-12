@@ -1,6 +1,7 @@
 package com.pard.weact.memberInformation.entity;
 
 import com.pard.weact.User.entity.User;
+import com.pard.weact.habitPost.entity.HabitPost;
 import com.pard.weact.room.entity.Room;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -9,6 +10,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter @Builder
@@ -23,6 +26,9 @@ public class MemberInformation {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    @OneToMany(mappedBy = "memberInformation", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<HabitPost> habitPosts = new ArrayList<>();
 
     // 방 정보
     @ManyToOne
